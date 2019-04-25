@@ -1,0 +1,60 @@
+---
+title: "Pre-alignment QC workflow"
+output: html_document
+fontsize: 11pt
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+### Tools
+
+- trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) - trim the adapter sequences off the raw FASTQs, takes into account information using paired-ends
+- fastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) - get general metrics for FASTQs such as number of reads, gc content, sequence duplication levels (see more detail below)
+- MultiQC (https://multiqc.info) - combines fastQC output for comparison across samples
+
+### Workflow
+
+1. QC of the raw fastq files using fastqc
+2. Trim the reads for adapter sequences and quality of bases
+3. QC of post-trimmed reads to check whether the reads have been trimmed correctly
+4. Compare all samples by generating a multiQC report
+
+### Performing pre-alignment QC
+
+- Script called "pre_alignment_QC_trimmomatic_fastQC_multiQC.R"
+- This performs all 4 steps in the workflow and has 4 arguments: 
+    1. Directory paths to fastq separated by ','
+    2. Output directory, where fastqc/trimmomatic and multiqc dirs will be created
+    3. Experiment name to append onto multiqc report
+    4. If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string
+- Example of running:
+
+```{r pre-alignment QC, eval = F, echo = T, tidy = T}
+
+nohup Rscript \
+/home/dzhang/projects/transcriptomics_diagnostics_wd/transcriptomics_diagnostics/QC_RNAseq_samples/pre_alignment_QC_trimmomatic_fastQC_multiQC.R \
+/data/RNAseq_diagnostics/mito_samples/postive_controls/2018-09-11,/data/RNAseq_diagnostics/mito_samples/postive_controls/2018-09-19 \
+/data/RNAseq_diagnostics/mito_samples/postive_controls/QC \
+mito_samples_positive_controls \
+NG-17299_ \
+&>/home/dzhang/projects/transcriptomics_diagnostics_wd/transcriptomics_diagnostics/QC_RNAseq_samples/nohup_logs/mito_samples_positive_controls.log&
+
+```
+
+
+### Trimmimotic details
+
+- Trimmomatic trims reads both for adapter sequences and for sequence quality
+- The default parameters are below: 
+
+```{r trimmomatic}
+
+
+
+```
+
+

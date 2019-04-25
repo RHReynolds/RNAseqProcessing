@@ -1,0 +1,285 @@
+---
+title: 'Pre-alignment QC: Head-to-head comparison of FastQC and FastP'
+author: "David Zhang and Regina H. Reynolds"
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Pre-QC using FastQC, Trimmomatic and MultiQC {.tabset}
+### Tools
+
+- trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) - trim the adapter sequences off the raw FASTQs, takes into account information using paired-ends
+- fastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) - get general metrics for FASTQs such as number of reads, gc content, sequence duplication levels (see more detail below)
+- MultiQC (https://multiqc.info) - combines fastQC output for comparison across samples
+
+### Workflow
+
+1. QC of the raw fastq files using fastqc
+2. Trim the reads for adapter sequences and quality of bases
+3. QC of post-trimmed reads to check whether the reads have been trimmed correctly
+4. Compare all samples by generating a multiQC report
+
+### Performing pre-alignment QC
+
+- Script called: "prealignmentQC_trimmomatic_fastQC_multiQC.R". Based on David's script entitled: "pre_alignment_QC_trimmomatic_fastQC_multiQC.R"
+- This performs all 4 steps in the workflow and has 4 arguments: 
+    1. Directory paths to fastq separated by ','
+    2. Output directory, where fastqc/trimmomatic and multiqc dirs will be created
+    3. Experiment name to append onto multiqc report
+    4. If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string
+- Example of running (from command line -- Rscript called):
+
+```{r pre-alignment QC, eval = F, echo = T, tidy = T}
+
+nohup Rscript \
+/home/rreynolds/projects/Aim2_TestQCandAlignment/QC_RNAseq_samples/prealignmentQC_trimmomatic_fastQC_multiQC.R \
+/home/rreynolds/data/RNASeq_TestRunQC \
+/home/rreynolds/data/RNASeq_TestRunQC/QC \
+testrun_fastQC_trimmomatic \
+NG-17299_ \
+&>/home/rreynolds/projects/Aim2_TestQCandAlignment/nohup_logs/testrun_fastQC_trimmomatic.log&
+
+```
+
+
+### Running trimmomatic
+
+#### Background
+- Trimmomatic trims reads both for adapter sequences and for sequence quality. 
+- It uses two approaches to detect technical sequences within the reads, known as 'simple mode' and 'palindrome mode' (see figure 1). The latter has increased sensitivity and specificity in that it better detects 'adapter read-through' scenarios. This occurs when the sequenced read length exceeds the length of the inserts in the library, resulting in the read running off the end of the desired sequence and into the adapter on the other end.  This leads to the addition of non-native sequence on the end of some reads in the library.  These will appear at various positions within the length of the reads, but will always consist of the same sequence. See link for further details: https://sequencing.qcfail.com/articles/read-through-adapters-can-appear-at-the-ends-of-sequencing-reads/
+- In addition to sliding window, Trimmomatic also uses a Maximum Information algorithm that combines three factors to determine the optimal trimming point.
+    1. A length threshold i.e. a read must be of a minimum length to be useful for downstream applications
+    2. Coverage factor i.e. a longer read with enough high-accuracy bases will contain more information
+    3. Error-rate
+- Read article for further details: https://www.ncbi.nlm.nih.gov/pubmed/24695404 
+
+```{r figure 1, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190314_Screenshot_Trimmomatic.png")
+```
+**Figure 1: Trimmomatic approaches to detecting technical sequences.** 
+
+#### Execution
+To execute, commands follow the same general structure:
+
+```{r trimmomatic general command, eval = F, echo = T, tidy = T}
+
+java -jar <path to trimmomatic.jar> PE [-threads <threads] [-phred33 | -phred64] [-trimlog <logFile>] <input 1> <input 2> <paired output 1> <unpaired output 1> <paired output 2> <unpaired output 2> <step 1>
+
+```
+
+
+An example of the command, as run from R, is shown below:
+
+```{r trimmomatic, eval = F, echo = T, tidy = T}
+
+  system(command = str_c("java -jar /tools/Trimmomatic/Trimmomatic-0.38/trimmomatic-0.38.jar PE -threads 15 ",
+                         fastq_per_sample_paths[1], " ", fastq_per_sample_paths[2], " ",
+                         fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_unpaired[1], " ",  
+                         fastq_per_sample_paths_trimmed_paired[2], " ", fastq_per_sample_paths_trimmed_unpaired[2], " ",
+                         "ILLUMINACLIP:/tools/Trimmomatic/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36"))
+
+```
+
+- Parameters that require defining include:
+    1. PE/SE: specify whether reads are paired/single end
+    2. Threads: the number of threads to use in carrying out trimming.
+    3. ILLUMINACLIP: specify illumina adapter sequences and how cutting of adapter sequences should be performed. Need to specify: "fastaWithAdaptersEtc:seed mismatches:palindrome clip threshold:simple clip threshold"
+        - fastaWithAdaptersEtc: specifies the path to a fasta file containing all the adapters, PCR sequences etc.
+        - seedMismatches: specifies the maximum mismatch count which will still allow a full match to be performed
+        - palindromeClipThreshold: specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment
+        - simpleClipThreshold: specifies how accurate the match between any adapter etc. sequence must be against a read
+    4. LEADING: specify the minimum quality required to keep a base. Any bases at the start of a read below this threshold will be trimmed.
+    5. TRAILING: specify the minimum quality required to keep a base. Any bases at the end of a read below this threshold will be trimmed.
+    6. SLIDING WINDOW: this performs a sliding window trimming, and cuts only once the average quality within the windows falls below a threshold. Specified with following notation, "windowSize:required quality"
+    7. MINLEN: minimum acceptable read length. Anything below will be dropped.
+- Parameters used in this run are based on default settings from trimmomatic
+    
+### MultiQC
+
+MultiQC will scan across directories provided (as many as you wish to provide) and produces a report. Sample code, as run from R, shown below:
+
+```{r multiQC, eval = F, echo = T, tidy = T}
+
+system(command = str_c("multiqc ", results_path, " -o ", multiqc_path, " -n ", experiment_name))
+
+
+```
+- ```-o```specifies the directory in which to create the multiQC report
+- ```-n```specifies the custom name for the report
+
+
+It is worth noting that files can be ignored using the ```-x```/```--ignore ``` flag. Modules to run can be chosen using the ```-m```/```--modules``` flag.
+
+## Pre-QC using fastp and multiQC {.tabset}
+### Tools
+- fastp (https://github.com/OpenGene/fastp) - a tool designed to provide fast all-in-one preprocessing of fastq files. Developed using C++ with multithreading for high performance.
+
+### Workflow
+1. QC and trimming of the raw fastq files using fastp
+2. Compare all samples by generating a multiQC report
+
+### Running fastp
+
+#### Background
+- fastp provides quality profiling, adapter trimming, read filtering and base correction.
+
+```{r figure 2, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190315_Screenshot_fastp.png")
+```
+**Figure 2: Fastp workflow.**
+
+- Adapter trimming: similar to Trimmomatic, fastp uses the PE nature of reads to perform an overlap to detect and trim adapter sequences (which apparently it does so well so as to be able to trim adapters with even only one base in the tail). Fastp detects adapter sequences automatically; any supplied sequences are used for sequence-matching-based adapter trimming only when fastp fails to detect a good overlap in the pair. 
+- Base correction: unlike Trimmomatic, fastp provides base correction for mismatches found in overlapped regions. Only corrects a mismatched base pair with an imbalanced quality score (e.g. when one has a high-quality score >Q30 vs. low-quality score < Q15). Corrections only performed if total mismatch is below a given threshold (T = 5).
+- Quality profiling of base calling: fastp also uses a sliding window
+- polyG trimming: this is a common issue with the Illumina NextSeq and NovaSeq series. fastp checks the flow cell identifier to determine if the data are from an Illumina NextSeq/NovaSeq, and if yes, automatically enables polyG tail trimming.
+- Offers UMI preprocessing, which will will be useful for UMI-tagging single cell RNA sequencing protocols.
+- Duplication evaluation: unlike FastQC, fastp supports PE duplication analysis. 
+    + FastQC detects duplicated reads for read1 and read2 individually, as opposed to duplication of the whole inserted DNA sequence, which can result in overestimation.
+    + FastQC detects reads by recording reads appearing in first 100,000 records and then counting these throughout the whole file. fastp evaluates a lot more than this.
+- Overrepresented sequence analysis: unlike FastQC, which only tracks the first 1M reads of the input file, fastp samples all reads evenly to evaluate overrepresented sequences and eliminate partial distribution bias. Advantage of this is that first 1M reads are typically from the edges of flowcell lanes, which may have lower quality or different patterns than the overall distribution. Uses 2 step process, and records the positions of overrepresented sequences:
+    + Analyse first 1.5M bp of input fastq to obtain list of sequences with relatively high occurrence frequency in different sizes.
+    + Sample entire file and count occurrence of each sequence and report those sequences with high occurrence frequency. 
+    
+#### Execution 
+Arguments required to run from command line by calling Rscript include:
+    1. Directory paths to fastq separated by ','
+    2. Output directory, where fastp and multiqc dirs will be created
+    3. Experiment name to append onto multiqc report
+    4. If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string
+
+```{r fastp nohup, eval = F, echo = T, tidy = T}
+
+nohup Rscript \
+/home/rreynolds/projects/Aim2_TestQCandAlignment/QC_RNAseq_samples/prealignmentQC_fastp_noperreadcutting.R \
+/home/rreynolds/data/RNASeq_TestRunQC \
+/home/rreynolds/data/RNASeq_TestRunQC/QC \
+testrun_fastp_trimmomatic_settings \
+NG-17299_ \
+&>/home/rreynolds/projects/Aim2_TestQCandAlignment/nohup_logs/testrun_fastp_trimmomatic_settings.log&
+
+```
+
+
+Fastp has many settings. An example of the command, as run using system within R, is shown below:
+
+
+```{r fastp , eval = F, echo = T, tidy = T}
+
+  system(command = str_c(
+    
+    ## Input/output options
+    "fastp --in1 ", 
+    fastq_per_sample_paths[1], " ", # read1 input file name
+    "--out1 ", 
+    fastq_per_sample_paths_trimmed[1], " ", # read1 output file name
+    "--in2 ", 
+    fastq_per_sample_paths[2], " ", # read2 input file name
+    "--out2 ", 
+    fastq_per_sample_paths_trimmed[2], " ", # read2 output file name
+    
+    ## Adapter trimming options
+    "--detect_adapter_for_pe ", # enable adapter sequence auto-detection for PE data 
+    "--adapter_sequence TACACTCTTTCCCTACACGACGCTCTTCCGATCT ", # TruSeq3-PE.fa PrefixPE/1: the adapter for read1. For PE data, this is used if R1/R2 are found not overlapped.
+    "--adapter_sequence_r2 GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT ", # TruSeq3-PE.fa PrefixPE/2: the adapter for read2 (PE data only). This is used if R1/R2 are found not overlapped. 
+    
+    ## Per read cutting by quality options
+    ## N.B. Performing per read cutting by quality score interferes with deduplication by fastp, as algorithms rely on exact matching between coordinate regions of paired reads
+    # "--cut_front ", # equivalent to Trimmomatic's LEADING option, if window size set to 1
+    # "--cut_front_window_size 1 ",
+    # "--cut_front_mean_quality 3 ", # Set to default trimmomatic quality for LEADING
+    # "--cut_right ", # similar to Trimmomatic SLIDINGWINDOW option
+    # "--cut_right_window_size 4 ",
+    # "--cut_right_mean_quality 15 ", # the mean quality requirement option for cut_right. Range: 1~36 default: 20 (Q20), but set to 15 to match Trimmomatic.
+    
+    ## Quality filtering options -- enabled by default
+    "--qualified_quality_phred 15 ", # the quality value that a base is qualified. Default 15 means phred quality >=Q15 is qualified.
+    "--unqualified_percent_limit 40 ", # how many percents of bases are allowed to be unqualified (0~100). Default 40.
+    "--n_base_limit 5 ", # if one read's number of N base is >n_base_limit, then this read/pair is discarded. Default is 5
+    
+    ## Length filtering options
+    "--length_required 36 ", # reads shorter than length_required will be discared. Default is 15, but set to 36 to match Trimmomatic.
+    
+    ## Base correction by overlap analysis options
+    "--correction ", # enables base correction
+    "--overlap_len_require 30 ", # the minimum length of the overlapped region for overlap analysis based adapter trimming and correction. 30 by default.
+    "--overlap_diff_limit 5 ", # the maximum difference of the overlapped region for overlap analysis based adapter trimming and correction. 5 by default.
+    
+    ## Overrepresented sequence analysis
+    "--overrepresentation_analysis ", # enable overrepresented sequence analysis
+    "--overrepresentation_sampling 20 ", #  one in (--overrepresentation_sampling) reads will be computed for overrepresentation analysis (1~10000), smaller is slower, default is 20.
+    
+    ## Reporting options
+    "--html ", fastp_path, "/", sample_name_to_filter, "_fastp.html ",
+    "--json ", fastp_path, "/", sample_name_to_filter, "_fastp.json ",
+    "--report_title '", sample_name_to_filter, "' ",
+    
+    ## Threading options
+    "--thread 16"  # fastp uses up to 16 threads
+    
+  ))
+
+```
+
+Originally chose to run this using similar settings to Trimmomatic. However, doing this messes with the deduplication algorithm for fastp (particularly in poor quality sequencing runs, where significant trimming may have occurred), therefore also ran a QC where ```--cut_front``` and ```--cut_right``` flags in per read cutting by quality options were not included.
+
+### MultiQC
+- Fastp ```.html``` and ```.json``` reports are compatible with MultiQC. It is important to maintain the ```fastp.json``` and ```fastp.html``` naming convention to ensure MultiQC can find the fastp report files. Otherwise use MultiQC as per usual.
+- Fastp outputs slightly different quality measures compared to fastQC. 
+- For comparison purposes, fastQC was run on fastp generated files. 
+
+## Comparison of results {.tabset}
+### Workflows
+Ran three different QC workflows:
+
+  1. FastQC --> Trimmomatic --> FastQC --> MultiQC
+  2. Fastp (with trimmomatic settings) --> FastQC --> MultiQC
+  3. Fastp --> FastQC --> MultiQC
+
+### Comparing trimmomatic vs. fastp with trimmomatic settings
+- Using fastQC output measures as a comparison, QC measures were very similar between the two, including average sequence length (as would be expected given both employed the same settings re. trimming).
+- Fastp QC combines both reads into one row in QC (see Figure 3), and estimates duplication using both reads, resulting in a much lower level of duplication (which is typically overestimated by fastQC).
+- One notable difference between the two workflows = time taken to complete. **Fastp processing time ranged from 610-1136 seconds per sample, as compared to several hours using Trimmomatic.**
+- The fastp module in MultiQC outputs a number of quality measures pre- and post-filtering, which means pre-QC with fastQC is not required. Also, outputs a number of measures that fastQC does not, including the estimated insert size distribution (which it can output, as it takes into account the paired nature of reads).
+
+```{r figure3, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_summary.png")
+```
+**Figure 3: Summary of quality measures when using fastp with trimmomatic settings.**
+
+### Comparing fastp with and without trimmomatic settings
+**Summary of results:**
+
+- Fastp ran faster when it did not have to perform per read cutting by quality (i.e. quality trimming as in Trimmomatic), although only by a margin of ~100 seconds. 
+- First thing to notice is that native fastp settings results in average read lengths that are precisely the same for read 1 and read 2. This is because the paired nature of the reads is used in QC. Using trimmomatic settings, on the other hand, may trim one read more than the other in a paired situation.
+- Marginally fewer reads passed filtering using trimmomatic settings, and thus the Mb of bases > Q30 is slightly lower when using trimmomatic settings.
+- When using trimmomatic settings, the majority of reads that are removed are removed due to them being too short, as can be seen from the insert size distribution. Trimming also appears to introduce an artificial peak in the insert size distribution (see figures 6 and 7).
+- **Otherwise no noticeable difference in the quality scores between the two settings** (see figure 4 and 5). 
+- **Conclusion:** Use fastp without trimmomatic settings. Will include fastQC step after fastp's quality control. This is on account of the fastp module for MultiQC not outputting all QC measures a user might want.
+
+```{r figure 4, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_summary.png")
+```
+**Figure 4: Summary of quality measures when using fastp with trimmomatic settings.**
+
+
+```{r figure 5, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_summary.png")
+```
+**Figure 5: Summary of quality measures when using fastp without trimmomatic settings.**
+
+```{r fastp trimmomatic insert figure, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_insert.png")
+```
+**Figure 6: Insert size distribution using fastp with trimmomatic settings.**
+
+  
+```{r fastp insert figure, echo=FALSE}
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_insert.png")
+```
+**Figure 7: Insert size distribution using fastp with native settings.**
+
