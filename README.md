@@ -11,7 +11,7 @@ Scripts were also adapted from David, and have been written such that they can b
 - fastp: ```Aim2_TestQCandAlignment/QC_RNAseq_samples/prealignmentQC_fastp_noperreadcutting.R```
 - fastp with trimmomatic settings: ```Aim2_TestQCandAlignment/QC_RNAseq_samples/prealignmentQC_fastp.R```
 
-A comparison and explanation of these various tools, in addition to a general description of the workflow of QC can be here: ```Aim2_TestQCandAlignment/Rmd_workflow/```
+A comparison and explanation of these various tools, in addition to a general description of the workflow of QC can be seen here: ```Aim2_TestQCandAlignment/Rmd_workflow/```
 
 
 
