@@ -66,7 +66,7 @@ NG-17299_ \
 - Read article for further details: https://www.ncbi.nlm.nih.gov/pubmed/24695404 
 
 ```{r figure 1, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190314_Screenshot_Trimmomatic.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190314_Screenshot_Trimmomatic.png")
 ```
 **Figure 1: Trimmomatic approaches to detecting technical sequences.** 
 
@@ -136,7 +136,7 @@ It is worth noting that files can be ignored using the ```-x```/```--ignore ``` 
 - fastp provides quality profiling, adapter trimming, read filtering and base correction.
 
 ```{r figure 2, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190315_Screenshot_fastp.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190315_Screenshot_fastp.png")
 ```
 **Figure 2: Fastp workflow.**
 
@@ -254,7 +254,7 @@ Ran three different QC workflows:
 - The fastp module in MultiQC outputs a number of quality measures pre- and post-filtering, which means pre-QC with fastQC is not required. Also, outputs a number of measures that fastQC does not, including the estimated insert size distribution (which it can output, as it takes into account the paired nature of reads).
 
 ```{r figure3, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_summary.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190403_fastp_trimmomatic_summary.png")
 ```
 **Figure 3: Summary of quality measures when using fastp with trimmomatic settings.**
 
@@ -269,24 +269,24 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/2
 - **Conclusion:** Use fastp without trimmomatic settings. Will include fastQC step after fastp's quality control. This is on account of the fastp module for MultiQC not outputting all QC measures a user might want.
 
 ```{r figure 4, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_summary.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190403_fastp_trimmomatic_summary.png")
 ```
 **Figure 4: Summary of quality measures when using fastp with trimmomatic settings.**
 
 
 ```{r figure 5, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_summary.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190403_fastp_summary.png")
 ```
 **Figure 5: Summary of quality measures when using fastp without trimmomatic settings.**
 
 ```{r fastp trimmomatic insert figure, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_trimmomatic_insert.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190403_fastp_trimmomatic_insert.png")
 ```
 **Figure 6: Insert size distribution using fastp with trimmomatic settings.**
 
   
 ```{r fastp insert figure, echo=FALSE}
-knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/20190403_fastp_insert.png")
+knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/figures/20190403_fastp_insert.png")
 ```
 **Figure 7: Insert size distribution using fastp with native settings.**
 
