@@ -1,0 +1,278 @@
+nohup: ignoring input
+-- Attaching packages --------------------------------------- tidyverse 1.2.1 --
+<U+221A> ggplot2 2.2.1     <U+221A> purrr   0.2.5
+<U+221A> tibble  1.4.2     <U+221A> dplyr   0.7.5
+<U+221A> tidyr   0.8.1     <U+221A> stringr 1.3.1
+<U+221A> readr   1.1.1     <U+221A> forcats 0.3.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+[1] "/home/rreynolds/data/RNASeq_TestRunQC/QC/multiqc directory already exists.."
+[1] "2019-03-20 12:50:48 - Performing QC and trimming for samples: S1483, NIAA, NICP"
+[1] "2019-03-20 12:50:48 - QC and Trimming: S1483"
+Read1 before filtering:
+total reads: 97196050
+total bases: 14676603550
+Q20 bases: 14296958108(97.4133%)
+Q30 bases: 13618175673(92.7883%)
+
+Read1 after filtering:
+total reads: 91272249
+total bases: 13759979580
+Q20 bases: 13485657945(98.0064%)
+Q30 bases: 12937413357(94.022%)
+
+Read2 before filtering:
+total reads: 97196050
+total bases: 14676603550
+Q20 bases: 13240824336(90.2172%)
+Q30 bases: 11728375200(79.9121%)
+
+Read2 aftering filtering:
+total reads: 91272249
+total bases: 13759485215
+Q20 bases: 12788724673(92.9448%)
+Q30 bases: 11498987942(83.5714%)
+
+Filtering result:
+reads passed filter: 182544498
+reads failed due to low quality: 11778116
+reads failed due to too many N: 69460
+reads failed due to too short: 26
+reads with adapter trimmed: 2146251
+bases trimmed due to adapters: 44878718
+reads corrected by overlap analysis: 4470414
+bases corrected by overlap analysis: 6400914
+
+Duplication rate: 20.0798%
+
+Insert size peak (evaluated by paired-end reads): 271
+
+JSON report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/S1483_fastp.json
+HTML report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/S1483_fastp.html
+
+fastp --in1 /home/rreynolds/data/RNASeq_TestRunQC/NG-17299_S1483_lib282688_6150_5_1.fastq.gz --out1 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz --in2 /home/rreynolds/data/RNASeq_TestRunQC/NG-17299_S1483_lib282688_6150_5_2.fastq.gz --out2 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz --detect_adapter_for_pe --adapter_sequence TACACTCTTTCCCTACACGACGCTCTTCCGATCT --adapter_sequence_r2 GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT --qualified_quality_phred 15 --unqualified_percent_limit 40 --n_base_limit 5 --length_required 36 --correction --overlap_len_require 30 --overlap_diff_limit 5 --overrepresentation_analysis --overrepresentation_sampling 20 --html /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/S1483_fastp.html --json /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/S1483_fastp.json --report_title S1483 --thread 16 
+fastp v0.19.8, time used: 1043 seconds
+[1] "2019-03-20 13:08:11 - QC and Trimming: NIAA"
+Read1 before filtering:
+total reads: 102817546
+total bases: 10281754600
+Q20 bases: 9832999216(95.6354%)
+Q30 bases: 9416527564(91.5848%)
+
+Read1 after filtering:
+total reads: 97295396
+total bases: 9668963889
+Q20 bases: 9340417235(96.602%)
+Q30 bases: 8981450759(92.8895%)
+
+Read2 before filtering:
+total reads: 102817546
+total bases: 10281754600
+Q20 bases: 9512570823(92.5189%)
+Q30 bases: 9056848920(88.0866%)
+
+Read2 aftering filtering:
+total reads: 97295396
+total bases: 9668556876
+Q20 bases: 9283160043(96.0139%)
+Q30 bases: 8881184384(91.8564%)
+
+Filtering result:
+reads passed filter: 194590792
+reads failed due to low quality: 10975986
+reads failed due to too many N: 62936
+reads failed due to too short: 5378
+reads with adapter trimmed: 9447496
+bases trimmed due to adapters: 123765901
+reads corrected by overlap analysis: 4995510
+bases corrected by overlap analysis: 6533838
+
+Duplication rate: 21.2777%
+
+Insert size peak (evaluated by paired-end reads): 148
+
+JSON report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_fastp.json
+HTML report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_fastp.html
+
+fastp --in1 /home/rreynolds/data/RNASeq_TestRunQC/NIAA_ATTACTCG-ATAGAGGC_L004_R1_001.fastq.gz --out1 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz --in2 /home/rreynolds/data/RNASeq_TestRunQC/NIAA_ATTACTCG-ATAGAGGC_L004_R2_001.fastq.gz --out2 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz --detect_adapter_for_pe --adapter_sequence TACACTCTTTCCCTACACGACGCTCTTCCGATCT --adapter_sequence_r2 GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT --qualified_quality_phred 15 --unqualified_percent_limit 40 --n_base_limit 5 --length_required 36 --correction --overlap_len_require 30 --overlap_diff_limit 5 --overrepresentation_analysis --overrepresentation_sampling 20 --html /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_fastp.html --json /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NIAA_fastp.json --report_title NIAA --thread 16 
+fastp v0.19.8, time used: 847 seconds
+[1] "2019-03-20 13:22:18 - QC and Trimming: NICP"
+Read1 before filtering:
+total reads: 66763473
+total bases: 6676347300
+Q20 bases: 6420348885(96.1656%)
+Q30 bases: 6170091399(92.4172%)
+
+Read1 after filtering:
+total reads: 63450396
+total bases: 6297752387
+Q20 bases: 6112166884(97.0531%)
+Q30 bases: 5895714895(93.6162%)
+
+Read2 before filtering:
+total reads: 66763473
+total bases: 6676347300
+Q20 bases: 6206609926(92.9642%)
+Q30 bases: 5920355312(88.6766%)
+
+Read2 aftering filtering:
+total reads: 63450396
+total bases: 6297398127
+Q20 bases: 6058731869(96.2101%)
+Q30 bases: 5805325686(92.1861%)
+
+Filtering result:
+reads passed filter: 126900792
+reads failed due to low quality: 6575554
+reads failed due to too many N: 46776
+reads failed due to too short: 3824
+reads with adapter trimmed: 6687564
+bases trimmed due to adapters: 96462333
+reads corrected by overlap analysis: 3104994
+bases corrected by overlap analysis: 4052925
+
+Duplication rate: 17.3031%
+
+Insert size peak (evaluated by paired-end reads): 148
+
+JSON report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_fastp.json
+HTML report: /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_fastp.html
+
+fastp --in1 /home/rreynolds/data/RNASeq_TestRunQC/NICP_ATTACTCG-TATAGCCT_L004_R1_001.fastq.gz --out1 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz --in2 /home/rreynolds/data/RNASeq_TestRunQC/NICP_ATTACTCG-TATAGCCT_L004_R2_001.fastq.gz --out2 /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz --detect_adapter_for_pe --adapter_sequence TACACTCTTTCCCTACACGACGCTCTTCCGATCT --adapter_sequence_r2 GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT --qualified_quality_phred 15 --unqualified_percent_limit 40 --n_base_limit 5 --length_required 36 --correction --overlap_len_require 30 --overlap_diff_limit 5 --overrepresentation_analysis --overrepresentation_sampling 20 --html /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_fastp.html --json /home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting/NICP_fastp.json --report_title NICP --thread 16 
+fastp v0.19.8, time used: 640 seconds
+Started analysis of NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Started analysis of NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Started analysis of NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Started analysis of NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Started analysis of NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Started analysis of NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 5% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 5% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 5% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 5% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 5% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 5% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 10% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 10% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 15% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 15% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 10% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 10% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 10% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 20% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 10% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 20% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 15% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 15% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 25% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 25% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 30% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 15% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 30% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 15% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 20% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 20% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 35% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 35% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 25% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 25% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 40% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 40% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 20% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 20% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 45% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 45% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 30% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 30% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 50% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 50% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 25% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 25% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 35% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 55% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 35% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 55% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 60% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 60% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 30% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 30% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 40% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 40% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 65% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 65% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 70% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 45% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 70% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 45% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 35% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 35% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 75% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 75% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 50% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 50% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 80% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 80% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 40% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 40% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 85% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 85% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 55% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 55% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 90% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 90% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 45% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 60% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 60% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 45% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 95% complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Approx 95% complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Analysis complete for NICP_ATTACTCG-TATAGCCT_L004_R2_001_trimmed.fastq.gz
+Analysis complete for NICP_ATTACTCG-TATAGCCT_L004_R1_001_trimmed.fastq.gz
+Approx 65% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 50% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 65% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 50% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 70% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 70% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 55% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 55% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 75% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 75% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 60% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 80% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 60% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 80% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 85% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 65% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 85% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 65% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 90% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 70% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 90% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 70% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 95% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 95% complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 75% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Analysis complete for NIAA_ATTACTCG-ATAGAGGC_L004_R2_001_trimmed.fastq.gz
+Approx 75% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Analysis complete for NIAA_ATTACTCG-ATAGAGGC_L004_R1_001_trimmed.fastq.gz
+Approx 80% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 80% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 85% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 85% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 90% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 90% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Approx 95% complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Approx 95% complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+Analysis complete for NG-17299_S1483_lib282688_6150_5_1_trimmed.fastq.gz
+Analysis complete for NG-17299_S1483_lib282688_6150_5_2_trimmed.fastq.gz
+[INFO   ]         multiqc : This is MultiQC v1.8.dev0
+[INFO   ]         multiqc : Template    : default
+[INFO   ]         multiqc : Searching '/home/rreynolds/data/RNASeq_TestRunQC/QC/fastp_noperreadcutting'
+[INFO   ]           fastp : Found 3 reports
+[INFO   ]          fastqc : Found 6 reports
+[INFO   ]         multiqc : Compressing plot data
+[INFO   ]         multiqc : Report      : data/RNASeq_TestRunQC/QC/multiqc/testrun_fastp_noperreadcutting.html
+[INFO   ]         multiqc : Data        : data/RNASeq_TestRunQC/QC/multiqc/testrun_fastp_noperreadcutting_data
+[INFO   ]         multiqc : MultiQC complete
