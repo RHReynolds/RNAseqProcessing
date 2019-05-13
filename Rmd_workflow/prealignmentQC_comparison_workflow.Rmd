@@ -2,7 +2,14 @@
 title: 'Pre-alignment QC: Head-to-head comparison of FastQC and FastP'
 author: "David Zhang and Regina H. Reynolds"
 date: ""
-output: html_document
+output: 
+  html_document:
+    theme: paper
+    highlight: kate
+    df_print: paged
+    toc: true
+    toc_float: true
+    number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -10,30 +17,30 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 ```
 
-## Pre-QC using FastQC, Trimmomatic and MultiQC {.tabset}
-### Tools
+# Pre-QC using FastQC, Trimmomatic and MultiQC
+
+## Tools
 
 - trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) - trim the adapter sequences off the raw FASTQs, takes into account information using paired-ends
 - fastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) - get general metrics for FASTQs such as number of reads, gc content, sequence duplication levels (see more detail below)
 - MultiQC (https://multiqc.info) - combines fastQC output for comparison across samples
 
-### Workflow
+## Workflow
 
 1. QC of the raw fastq files using fastqc
 2. Trim the reads for adapter sequences and quality of bases
 3. QC of post-trimmed reads to check whether the reads have been trimmed correctly
 4. Compare all samples by generating a multiQC report
 
-### Performing pre-alignment QC
+## Performing pre-alignment QC
 
 - Script called: "prealignmentQC_trimmomatic_fastQC_multiQC.R". Based on David's script entitled: "pre_alignment_QC_trimmomatic_fastQC_multiQC.R"
 - This performs all 4 steps in the workflow and has 4 arguments: 
-    1. Directory paths to fastq separated by ','
-    2. Output directory, where fastqc/trimmomatic and multiqc dirs will be created
-    3. Experiment name to append onto multiqc report
-    4. If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string
+      1. Directory paths to fastq separated by ','
+      2. Output directory, where fastqc/trimmomatic and multiqc dirs will be created
+      3. Experiment name to append onto multiqc report
+      4. If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string
 - Example of running (from command line -- Rscript called):
-
 ```{r pre-alignment QC, eval = F, echo = T, tidy = T}
 
 nohup Rscript \
@@ -47,9 +54,9 @@ NG-17299_ \
 ```
 
 
-### Running trimmomatic
+## Running trimmomatic
 
-#### Background
+### Background
 - Trimmomatic trims reads both for adapter sequences and for sequence quality. 
 - It uses two approaches to detect technical sequences within the reads, known as 'simple mode' and 'palindrome mode' (see figure 1). The latter has increased sensitivity and specificity in that it better detects 'adapter read-through' scenarios. This occurs when the sequenced read length exceeds the length of the inserts in the library, resulting in the read running off the end of the desired sequence and into the adapter on the other end.  This leads to the addition of non-native sequence on the end of some reads in the library.  These will appear at various positions within the length of the reads, but will always consist of the same sequence. See link for further details: https://sequencing.qcfail.com/articles/read-through-adapters-can-appear-at-the-ends-of-sequencing-reads/
 - In addition to sliding window, Trimmomatic also uses a Maximum Information algorithm that combines three factors to determine the optimal trimming point.
@@ -63,7 +70,7 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/2
 ```
 **Figure 1: Trimmomatic approaches to detecting technical sequences.** 
 
-#### Execution
+### Execution
 To execute, commands follow the same general structure:
 
 ```{r trimmomatic general command, eval = F, echo = T, tidy = T}
@@ -99,7 +106,7 @@ An example of the command, as run from R, is shown below:
     7. MINLEN: minimum acceptable read length. Anything below will be dropped.
 - Parameters used in this run are based on default settings from trimmomatic
     
-### MultiQC
+## MultiQC
 
 MultiQC will scan across directories provided (as many as you wish to provide) and produces a report. Sample code, as run from R, shown below:
 
@@ -115,17 +122,17 @@ system(command = str_c("multiqc ", results_path, " -o ", multiqc_path, " -n ", e
 
 It is worth noting that files can be ignored using the ```-x```/```--ignore ``` flag. Modules to run can be chosen using the ```-m```/```--modules``` flag.
 
-## Pre-QC using fastp and multiQC {.tabset}
-### Tools
+# Pre-QC using fastp and multiQC
+## Tools
 - fastp (https://github.com/OpenGene/fastp) - a tool designed to provide fast all-in-one preprocessing of fastq files. Developed using C++ with multithreading for high performance.
 
-### Workflow
+## Workflow
 1. QC and trimming of the raw fastq files using fastp
 2. Compare all samples by generating a multiQC report
 
-### Running fastp
+## Running fastp
 
-#### Background
+### Background
 - fastp provides quality profiling, adapter trimming, read filtering and base correction.
 
 ```{r figure 2, echo=FALSE}
@@ -145,7 +152,7 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/2
     + Analyse first 1.5M bp of input fastq to obtain list of sequences with relatively high occurrence frequency in different sizes.
     + Sample entire file and count occurrence of each sequence and report those sequences with high occurrence frequency. 
     
-#### Execution 
+### Execution 
 Arguments required to run from command line by calling Rscript include:
     1. Directory paths to fastq separated by ','
     2. Output directory, where fastp and multiqc dirs will be created
@@ -227,20 +234,20 @@ Fastp has many settings. An example of the command, as run using system within R
 
 Originally chose to run this using similar settings to Trimmomatic. However, doing this messes with the deduplication algorithm for fastp (particularly in poor quality sequencing runs, where significant trimming may have occurred), therefore also ran a QC where ```--cut_front``` and ```--cut_right``` flags in per read cutting by quality options were not included.
 
-### MultiQC
+## MultiQC
 - Fastp ```.html``` and ```.json``` reports are compatible with MultiQC. It is important to maintain the ```fastp.json``` and ```fastp.html``` naming convention to ensure MultiQC can find the fastp report files. Otherwise use MultiQC as per usual.
 - Fastp outputs slightly different quality measures compared to fastQC. 
 - For comparison purposes, fastQC was run on fastp generated files. 
 
-## Comparison of results {.tabset}
-### Workflows
+# Comparison of results
+## Workflows
 Ran three different QC workflows:
 
   1. FastQC --> Trimmomatic --> FastQC --> MultiQC
   2. Fastp (with trimmomatic settings) --> FastQC --> MultiQC
   3. Fastp --> FastQC --> MultiQC
 
-### Comparing trimmomatic vs. fastp with trimmomatic settings
+## Comparing trimmomatic vs. fastp with trimmomatic settings
 - Using fastQC output measures as a comparison, QC measures were very similar between the two, including average sequence length (as would be expected given both employed the same settings re. trimming).
 - Fastp QC combines both reads into one row in QC (see Figure 3), and estimates duplication using both reads, resulting in a much lower level of duplication (which is typically overestimated by fastQC).
 - One notable difference between the two workflows = time taken to complete. **Fastp processing time ranged from 610-1136 seconds per sample, as compared to several hours using Trimmomatic.**
@@ -251,7 +258,7 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_TestQCandAlignment/data/2
 ```
 **Figure 3: Summary of quality measures when using fastp with trimmomatic settings.**
 
-### Comparing fastp with and without trimmomatic settings
+## Comparing fastp with and without trimmomatic settings
 **Summary of results:**
 
 - Fastp ran faster when it did not have to perform per read cutting by quality (i.e. quality trimming as in Trimmomatic), although only by a margin of ~100 seconds. 
