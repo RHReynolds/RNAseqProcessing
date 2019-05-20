@@ -132,6 +132,19 @@ It is worth noting that files can be ignored using the ```-x```/```--ignore ``` 
 
 ## Running fastp
 
+### Installing fastp on mrserver
+
+- The executable for fastp has already been downloaded to `/tools/fastp`
+- To have bash automatically use this so you can call `fastp` from the command line without having to point to it's exact location on the server
+- Edit your .profile your home directory:
+
+```{bash, echo = T, eval = F}
+cd 
+nano .profile
+```
+
+- To include the line `export PATH="/tools/fastp/:$PATH"`, which will tell bash to look in `/tools/fastp` for commands 
+
 ### Background
 - fastp provides quality profiling, adapter trimming, read filtering and base correction.
 
