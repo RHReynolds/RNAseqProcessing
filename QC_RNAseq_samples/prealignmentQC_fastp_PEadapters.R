@@ -11,10 +11,11 @@ library(stringr)
 #' @param fastq_dir_paths Path names in which fastq files for QC are located
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to their original name
 #' @trimmomatic_path Path name where trimmed files are stored.
+#' @to_exclude_to_get_sample_name Exclude this text or regex from the filename to get the sample name. default="_.*" 
 #' 
 #' @return Dataframe with file paths.
 
-get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path){
+get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path, to_exclude_to_get_sample_name="_.*"){
   
   fastq_df <- 
     data_frame(fastq_paths_full = 
@@ -24,8 +25,8 @@ get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path
                  str_replace("/.*/", ""),
                sample_name = fastq_filename %>% 
                  str_replace(str_c("^", prefix_to_sample_name), "") %>% 
-                 str_replace("_.*", ""), 
-               fastq_paths_trimmed = fastp_path %>% str_c(., "/", fastq_filename) %>% str_replace("\\.fastq\\.gz|\\.fq\\.gz", "_QC.fastq.gz")) %>% 
+                 str_replace(to_exclude_to_get_sample_name, ""),
+               fastq_paths_trimmed = fastp_path %>% str_c(., "/", fastq_filename) %>% str_replace("\\.fastq\\.gz|\\.fq\\.gz", "_trimmed.fastq.gz")) %>% 
     arrange(fastq_filename)
   
   return(fastq_df)
@@ -61,13 +62,13 @@ make_results_dir <- function(results_path, folder_name){
 
 args <- commandArgs(trailingOnly=TRUE)
 
-if (length(args) != 3 && length(args) != 4) {
-  
+if (length(args) < 3 | length(args) > 5) {   
   stop("At least the first 3 arguments must be supplied:\n
        1) Directory paths to fastq separated by ','\n
        2) Output directory, where fastp and multiqc dirs will be created\n
        3) Experiment name to append onto multiqc report\n
-       4) If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string\n")
+       4) If the file paths have a prefix before the file name, this needs to be given here, otherwise defaults to empty string\n
+       5) The text (or regex) that needs to be excluded from the tail end of the filename to get the sample name")
   
 } 
 
@@ -82,12 +83,13 @@ if (length(args) != 3 && length(args) != 4) {
 fastq_dir_paths <- args[[1]] %>% str_split(",") %>% unlist()
 output_path <- args[[2]]
 experiment_name <- args[[3]]
-sample_name_prefix <- ifelse(length(args) == 4, args[[4]], "")
+sample_name_prefix <- ifelse((length(args) >=4 && args[[4]] != "NA" ), args[[4]], "")
+exclude_to_get_sample_name <- ifelse((length(args) == 5 && args[[5]] != "NA" ), args[[5]], "")
 
 fastp_path <- make_results_dir(results_path = output_path, folder_name = "fastp")
 multiqc_path <- make_results_dir(results_path = output_path, folder_name = "multiqc")
 
-fastq_df <- get_fastp_df(fastq_dir_paths, prefix_to_sample_name = sample_name_prefix, fastp_path)
+fastq_df <- get_fastp_df(fastq_dir_paths, prefix_to_sample_name = sample_name_prefix, fastp_path,exclude_to_get_sample_name)
 
 sample_names_uniq <- fastq_df$sample_name %>% unique()
 
