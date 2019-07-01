@@ -14,3 +14,10 @@ install_github("RHReynolds/RNAseqProcessing", auth_token = "")
 ```
 
 As this is a private repository, you will have to generate a [personal access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line), and insert this into the ```auth_token``` argument. **Remember to save this token, as you may need it to access other private repositories.**
+
+## Scripts for QC and alignment
+
+ Script | Processing Step | Description
+ ------ | --------------- | -----------
+ [prealignmentQC_fastp_PEadapters.R](QC_RNAseq_samples/prealignmentQC_fastp_PEadapters.R) | Pre-alignment QC | This will perform fastp trimming, with adapter sequence auto-detection for PE data enabled. If you wish to specify adapters, this flag needs to be enabled. Script not yet produced.
+ [prealignmentQC_fastp_notrimming.R](QC_RNAseq_samples/prealignmentQC_fastp_notrimming.R) | Pre-alignment QC | This will run fastp, but with trimming disabled.
