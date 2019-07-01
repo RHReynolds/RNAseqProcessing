@@ -4,14 +4,14 @@
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
 #'   their original name
 #' @trimmomatic_path Path name where trimmed files are stored.
-#' @to_exclude_to_get_sample_name Exclude this text or regex from the filename
-#'   to get the sample name. To substitute for an empty string, use NA.
-#'   default="_.*"
+#' @to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
+#'   from the tail end of the filename to get the sample name. If no argument
+#'   provided, defaults to empty string.
 #'
 #' @return Dataframe with file paths.
 #' @export
 
-get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path, to_exclude_to_get_sample_name="_.*"){
+get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path, to_exclude_to_get_sample_name = ""){
 
   fastq_df <-
     data_frame(fastq_paths_full =
@@ -21,7 +21,7 @@ get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path
                  str_replace("/.*/", ""),
                sample_name = fastq_filename %>%
                  str_replace(str_c("^", prefix_to_sample_name), "") %>%
-                 str_replace(to_exclude_to_get_sample_name, ""),
+                 str_replace(str_c(to_exclude_to_get_sample_name,"$"), ""),
                fastq_paths_trimmed = fastp_path %>% str_c(., "/", fastq_filename) %>% str_replace("\\.fastq\\.gz|\\.fq\\.gz", "_trimmed.fastq.gz")) %>%
     arrange(fastq_filename)
 
