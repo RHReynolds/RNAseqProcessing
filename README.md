@@ -11,9 +11,9 @@ Files used for this project were provided by David Zhang:
 3. ```/data/RNAseq_diagnostics/mito_samples/postive_controls/2018-09-11/NG-17299_S1483_*.fastq.gz```
 
 Scripts were also adapted from David, and have been written such that they can be generalised to any samples. Depending on whether you want to use fastp or trimmomatic please use:
-- Trimmomatic: ```QC_RNAseq_samples/prealignmentQC_trimmomatic_fastQC_multiQC.R```
-- fastp: ```QC_RNAseq_samples/prealignmentQC_fastp_noperreadcutting.R```
-- fastp with trimmomatic settings: ```QC_RNAseq_samples/prealignmentQC_fastp.R```
+- Trimmomatic: ```Comparison_Trimmomatic_Fastp/prealignmentQC_trimmomatic_fastQC_multiQC.R```
+- fastp: ```Comparison_Trimmomatic_Fastp/prealignmentQC_fastp_noperreadcutting.R```
+- fastp with trimmomatic settings: ```Comparison_Trimmomatic_Fastp/prealignmentQC_fastp.R```
 
 A comparison and explanation of these various tools, in addition to a general description of the workflow of QC can be seen here: ```Rmd_workflow/```
 
