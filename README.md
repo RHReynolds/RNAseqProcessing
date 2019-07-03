@@ -1,10 +1,12 @@
 # RNAseq processing
 
 ## Aim
-1. [Comparison of RNA QC run using either trimmomatic or fastp](Comparison_Trimmomatic_Fastp/Comparison.md).
+1. [Comparison of RNA QC run using either trimmomatic or fastp](comparison_trimmomatic_fastp/Comparison.md).
 2. Provision of scripts for QC and alignment.
 
 ## Using the package
+
+### Installing the package
 To use, install from github. This can be done using the following lines of code:
 
 ``` r
@@ -14,6 +16,16 @@ install_github("RHReynolds/RNAseqProcessing", auth_token = "")
 ```
 
 As this is a private repository, you will have to generate a [personal access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line), and insert this into the ```auth_token``` argument. **Remember to save this token, as you may need it to access other private repositories.**
+
+### Calling tools from the command line
+The executables for all tools have already been downloaded to `/tools/`. To run all scripts below presumes that you are able to call various tools from the command line without having to point to their exact location on the server. To do this edit your .profile in your home directory:
+
+```{bash, echo = T, eval = F}
+cd 
+nano .profile
+```
+
+Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which will tell base to look in `/tools/` for commands. E.g. For fastp add: `export PATH="/tools/fastp/:$PATH"`. 
 
 ## Scripts for QC and alignment
 

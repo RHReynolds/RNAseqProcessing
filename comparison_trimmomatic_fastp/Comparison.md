@@ -9,4 +9,4 @@ Scripts were also adapted from David, and have been written such that they can b
 - fastp: [prealignmentQC_fastp_noperreadcutting.R](prealignmentQC_fastp_noperreadcutting.R)
 - fastp with trimmomatic settings: [prealignmentQC_fastp.R](prealignmentQC_fastp.R)
 
-A comparison and explanation of these various tools, in addition to a general description of the workflow of QC can be seen using this [link](Rmd_workflow/prealignmentQC_comparison_workflow.html).
+A comparison and explanation of these various tools, in addition to a general description of the workflow of QC can be seen using this [link](prealignmentQC_comparison_workflow.html).
