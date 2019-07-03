@@ -3,7 +3,7 @@
 #' @param fastq_dir_paths Path names in which fastq files for QC are located
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
 #'   their original name
-#' @trimmomatic_path Path name where trimmed files are stored.
+#' @fastp_path Path name where trimmed files will be stored.
 #' @to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
 #'   from the tail end of the filename to get the sample name. If no argument
 #'   provided, defaults to empty string.
