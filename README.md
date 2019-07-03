@@ -21,3 +21,5 @@ As this is a private repository, you will have to generate a [personal access to
  ------ | --------------- | ----------- | ---------
  [prealignmentQC_fastp_PEadapters.R](QC_RNAseq_samples/prealignmentQC_fastp_PEadapters.R) | Pre-alignment QC | This will perform fastp trimming, with adapter sequence auto-detection for PE data enabled. If you wish to specify adapters, this flag needs to be enabled. Script not yet produced. | DZ, KD & RHR
  [prealignmentQC_fastp_notrimming.R](QC_RNAseq_samples/prealignmentQC_fastp_notrimming.R) | Pre-alignment QC | This will run fastp, but with trimming disabled. | DZ, KD & RHR
+ STAR_alignment.R | Alignment | Performs STAR alignment. For details of alignment process, read the [alignment workflow](alignment/alignment_workflow.md). | DZ
+ STAR_alignment_withReadGroups | Alignment | Performs STAR alignment and adds read groups, which can be used for later de-duplication with UMIs. For details of alignment process, read the [alignment workflow](alignment/alignment_workflow.md). | RHR
