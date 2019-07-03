@@ -1,8 +1,8 @@
 #' Function to make a data frame of fastQC paths
 #'
-#' @param fastq_dir_paths Path names in which fastq files for QC are located
+#' @param fastq_dir_paths Path names in which fastq files for QC are located.
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
-#'   their original name
+#'   their original name.
 #' @fastp_path Path name where trimmed files will be stored.
 #' @to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
 #'   from the tail end of the filename to get the sample name. If no argument
@@ -31,10 +31,10 @@ get_fastp_df <- function(fastq_dir_paths, prefix_to_sample_name = "", fastp_path
 
 #' Function make directories for results
 #'
-#' @param results_path File path for where output files will be stored
-#' @param folder_name Folder name for output folder
+#' @param results_path File path for where output files will be stored.
+#' @param folder_name Folder name for output folder.
 #'
-#' @return Creates a new folder for output (if it doesn't already exist)
+#' @return Creates a new folder for output (if it doesn't already exist).
 #' @export
 
 

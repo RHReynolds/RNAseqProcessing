@@ -26,7 +26,7 @@ if (length(args) < 3 | length(args) > 5) {
 # args[[2]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC"
 # args[[3]] <- "PD_tissue_polyA"
 # args[[4]] <- "NM...._"
-
+# args[[5]] <- "_.*"
 
 fastq_dir_paths <- args[[1]] %>% str_split(",") %>% unlist()
 output_path <- args[[2]]
