@@ -25,7 +25,7 @@ cd
 nano .profile
 ```
 
-Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which will tell base to look in `/tools/` for commands. E.g. For fastp add: `export PATH="/tools/fastp/:$PATH"`. 
+Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which will tell bash to look in `/tools/` for commands. E.g. For fastp add: `export PATH="/tools/fastp/:$PATH"`. 
 
 ## Scripts for QC and alignment
 
