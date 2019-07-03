@@ -1,7 +1,7 @@
 # RNAseq processing
 
 ## Aim
-1. [Comparison of RNA QC run using either trimmomatic or fastp](Comparison_Trimmomatic_Fastp/Comparison.md).
+1. [Comparison of RNA QC run using either trimmomatic or fastp](comparison_trimmomatic_fastp/Comparison.md).
 2. Provision of scripts for QC and alignment.
 
 ## Using the package
