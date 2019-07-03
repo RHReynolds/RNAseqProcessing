@@ -1,4 +1,4 @@
-#' Title
+#' Function to make a data frame of trimmed paths for STAR.
 #'
 #' @param fastq_dir_paths Path names in which trimmed fastq files for alignment are located.
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
@@ -7,7 +7,7 @@
 #'   from the tail end of the filename to get the sample name. If no argument
 #'   provided, defaults to empty string.
 #'
-#' @return
+#' @return Dataframe with file paths.
 #' @export
 #'
 
@@ -28,11 +28,11 @@ get_fastqc_for_STAR_df <- function(fastq_dir_paths, prefix_to_sample_name = "", 
 
 }
 
-#' Title
+#' Function to make a data frame of bam paths for sorting and indexing.
 #'
 #' @param bam_dir_paths Path names in which bam files are located.
 #'
-#' @return
+#' @return Dataframe with file paths.
 #' @export
 
 get_bam_df <- function(bam_dir_paths){
