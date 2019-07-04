@@ -1,3 +1,5 @@
+** WORK IN PROGRESS **
+
 ### Download + installation 
 
 - downloaded star from https://github.com/alexdobin/STAR/releases
