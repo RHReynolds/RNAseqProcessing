@@ -20,18 +20,19 @@ if (length(args) != 3 && length(args) != 4) {
 
 }
 
-args <- list()
-args[[1]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp/"
-args[[2]] <- "/data/STAR_data/genome_index_hg38"
-args[[3]] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/"
-args[[4]] <- "NM...._"
-args[[5]] <- "_.*"
+# # Comment in if want to test run script
+# args <- list()
+# args[[1]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp/"
+# args[[2]] <- "/data/STAR_data/genome_index_hg38"
+# args[[3]] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/"
+# args[[4]] <- "NM...._"
+# args[[5]] <- "_.*"
 
 
 fastq_dir_paths <- args[[1]] %>% str_split(",") %>% unlist()
 genome_index_path <- args[[2]]
 output_path <- args[[3]]
-sample_name_prefix <- ifelse(length(args) == 4, args[[4]], "")
+sample_name_prefix <- ifelse((length(args) >=4 && args[[4]] != "NA" ), args[[4]], "")
 exclude_to_get_sample_name <- ifelse((length(args) == 5 && args[[5]] != "NA" ), args[[5]], "")
 
 fastq_df <- RNAseqProcessing::get_fastqc_for_STAR_df(fastq_dir_paths,
@@ -58,7 +59,7 @@ for(i in seq_along(sample_names_uniq)){
 
   if(length(fastq_per_sample_paths_trimmed_paired) != 2) { stop(str_c("number fastq files for ", sample_name_to_filter, " not 2, expected because of paired-end")) }
 
-  system(command = str_c("/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/STAR",
+  system(command = str_c("STAR",
                          " --runThreadN ", threads_STAR,
                          " --genomeDir ", genome_index_path,
                          " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
@@ -66,9 +67,9 @@ for(i in seq_along(sample_names_uniq)){
                          "--outFilterType BySJout ", # removes spurious split reads
                          "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
                          "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor
-                         "--alignSJDBoverhangMin 3 ", # maximum unannotated split read anchor
-                         "--outFilterMismatchNmax 3 ", # max num mismatches between pairs (was 2 for 100bp reads)
-                         "--alignIntronMin 20 ", # min intron length (currently from ensembl its )
+                         "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor
+                         "--outFilterMismatchNmax 2 ", # max num mismatches between pairs. For 100 bp read, allow 2. For 150 bp reads, use 3.
+                         "--alignIntronMin 20 ", # min intron length
                          "--alignIntronMax 1000000 ", # max intron length (currently from ensembl its 1,097,903 from KCNIP4)
                          "--alignMatesGapMax 1000000 ", # max gap between pair mates
                          "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
