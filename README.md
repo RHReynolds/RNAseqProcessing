@@ -35,3 +35,4 @@ Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which 
  [prealignmentQC_fastp_notrimming.R](QC_RNAseq_samples/prealignmentQC_fastp_notrimming.R) | Pre-alignment QC | This will run fastp, but with trimming disabled. | DZ, KD & RHR
  [STAR_alignment.R](alignment/STAR_alignment.R) | Alignment | Performs STAR alignment. For details of alignment process, read the [alignment workflow](alignment/alignment.md). **Note that this script is currently optimised for 100bp reads.** | DZ
  [STAR_alignment_withReadGroups.R](alignment/STAR_alignment_withReadGroups.R) | Alignment | Performs STAR alignment and adds read groups, which can be used for later de-duplication with UMIs. For details of alignment process, read the [alignment workflow](alignment/alignment.md). **Note that this script is currently optimised for 100bp reads.** | DZ & RHR
+
