@@ -58,7 +58,7 @@ STAR --runThreadN 10 \
     + *genomeDir* - genome index directory path created above
     + *readFilesIn* - the two input fastq's (paired end) that you would like to align
     + *readF
-- STAR manual with details of more parameters (http://chagall.med.cornell.edu/RNASEQcourse/STARmanual.pdf)
+- STAR manual with details of more parameters (https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)
 
 ```{r STAR funning, echo = T, tidy = T, eval = F}
 
