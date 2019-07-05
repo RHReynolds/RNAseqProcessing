@@ -22,12 +22,18 @@ if (length(args) != 3 && length(args) != 4) {
 
 # # Comment in if want to test run script
 # args <- list()
-# args[[1]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp/"
+# args[[1]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp"
 # args[[2]] <- "/data/STAR_data/genome_index_hg38"
-# args[[3]] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/"
+# args[[3]] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR"
 # args[[4]] <- "NM...._"
 # args[[5]] <- "_.*"
 
+# args <- list()
+# args[[1]] <- "/data/RNAseq_PD/test/QC/fastp"
+# args[[2]] <- "/data/STAR_data/genome_index_hg38"
+# args[[3]] <- "/data/RNAseq_PD/test/STAR"
+# args[[4]] <- "NM...._"
+# args[[5]] <- "_.*"
 
 fastq_dir_paths <- args[[1]] %>% str_split(",") %>% unlist()
 genome_index_path <- args[[2]]
@@ -57,6 +63,14 @@ for(i in seq_along(sample_names_uniq)){
     filter(sample_name == sample_name_to_filter) %>%
     .[["fastq_paths_trimmed_paired"]]
 
+
+  # This needs modifying for use with a generalised df with the necessary RG information
+  RG_ID <- fastq_df %>%
+    filter(sample_name == sample_name_to_filter) %>%
+    .[["fastq_filename"]] %>%
+    str_replace("_R.*", "") %>%
+    unique()
+
   if(length(fastq_per_sample_paths_trimmed_paired) != 2) { stop(str_c("number fastq files for ", sample_name_to_filter, " not 2, expected because of paired-end")) }
 
   system(command = str_c("STAR",
@@ -64,15 +78,19 @@ for(i in seq_along(sample_names_uniq)){
                          " --genomeDir ", genome_index_path,
                          " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
                          " --readFilesCommand  zcat ", # because fastq's are zipped
+                         "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "),
+                         "--outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
+                         "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
+                         "--outSAMattrRGline ", str_c("ID:", RG_ID, " PU:xxx ", "SM:", sample_name_to_filter, " PL:Illumina LB:xxx "), #
                          "--outFilterType BySJout ", # removes spurious split reads
                          "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
-                         "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor
-                         "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor
-                         "--outFilterMismatchNmax 2 ", # max num mismatches between pairs. For 100 bp read, allow 2. For 150 bp reads, use 3.
-                         "--alignIntronMin 20 ", # min intron length
-                         "--alignIntronMax 1000000 ", # max intron length (currently from ensembl its 1,097,903 from KCNIP4)
-                         "--alignMatesGapMax 1000000 ", # max gap between pair mates
-                         "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
-                         "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_")))
+                         "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
+                         "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
+                         "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
+                         "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
+                         "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
+                         "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
+                         "--alignSJDBoverhangMin 3 " # minimum annotated split read anchor. Default is 3.
+                         ))
 }
 
