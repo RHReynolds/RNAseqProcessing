@@ -21,7 +21,7 @@ export PATH=$PATH:/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/
 - *Note:* As users might have varying read lengths they may have to generate a new genome index specific to their read length.
     
 ### Downloading the .fasta file
-- The .fasta for hg38, ensembl v97 was downloaded using below command in the directory `/data/references/fasta`. F
+- The .fasta for hg38, ensembl v97 was downloaded using below command in the directory `/data/references/fasta`.
 - In general, as long as the build does not change this file can be used repeatedly to generate genome indexes.
 
 ```{bash Download ensembl hg38 DNA reference, echo = T, tidy = F, eval = F}
@@ -34,7 +34,6 @@ gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 - The latest version can be downloaded from: https://www.ensembl.org/info/data/ftp/index.html. 
 - We have been storing various versions in the directory: `/data/references/ensembl/gtf_gff3/`. Choose the version suitable to your purposes.
 - As an example, version 97 was downladed using the following command in the directory `/data/references/ensembl/gtf_gff3/v97`:
-
 ```{bash Download gtf, echo = T, tidy = F, eval = F}
 wget ftp://ftp.ensembl.org/pub/release-97/gtf/homo_sapiens/Homo_sapiens.GRCh38.97.gtf.gz
 gunzip Homo_sapiens.GRCh38.97.gtf.gz
@@ -47,8 +46,8 @@ gunzip Homo_sapiens.GRCh38.97.gtf.gz
     + *genomeFastaFiles* - fasta of genome
     + *sjdbGTFfile* - gtf file describing gene annotation 
     + *sjdbOverhang* - speciﬁes the length of the genomic sequence around the annotated junction to be used in constructing the splice junctions database. Ideally, this length should be equalto the ReadLength-1, where ReadLength is the length of the reads. *In other words, this should be optimised to your read length.*
-- Some genome indices have already been generated for different versions of ensembl. Please see the directory `/data/STAR_data/`. Within each version folder, you will find additional folders named "sjdbOverhang_XXX", with XXX specifying the overhang used. 
-    
+- Some genome indices have already been generated for different versions of ensembl. Please see the directory `/data/STAR_data/`. Within each version folder, you will find additional folders named `sjdbOverhang_.*`, with `.*` specifying the overhang used. 
+- If you need to generate a new one, example code is shown below.
 ```{bash STAR genome index generation, echo = T, tidy = T, eval = F}
 STAR --runThreadN 10 \
 --runMode genomeGenerate \
@@ -62,10 +61,6 @@ STAR --runThreadN 10 \
 
 - For a sample of ~100mill 100bp paired end reads, using 15 threads, star takes about 15 minutes to finish aligning
 - There are several parameters that can be set in STAR. Below is what has been used in [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
-- STAR default parameters: https://github.com/alexdobin/STAR/blob/master/source/parametersDefault 
-- STAR manual with details of more parameters: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
-- Many of the parameters set below were set according to the ENCODE standard options for long RNA-seq pipeline (as per [STAR manual 2.7.1a](STARmanual.pdf))
-
 ```{r STAR function, echo = T, tidy = T, eval = F}
   system(command = str_c("STAR",
                            " --runThreadN ", threads_STAR,
@@ -87,12 +82,13 @@ STAR --runThreadN 10 \
                            "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
                            ))
 ```
-
+- STAR default parameters: https://github.com/alexdobin/STAR/blob/master/source/parametersDefault 
+- STAR manual with details of more parameters: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
+- Many of the parameters set below were set according to the ENCODE standard options for long RNA-seq pipeline (as per [STAR manual 2.7.1a](STARmanual.pdf))
 - To perform mapping use [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R). Call the script using: `Rscript /path/to/script/STAR_alignment_withReadGroups_1pass.R -h`. The `-h` flag will list the required inputs and optional arguments.
     - It is important that required inputs are supplied in the correct order (i.e. fastq_dir_paths, genome_index_path, output_path).
     - Optional arguments can be called using flags. To see options, call the script with `-h` flag.
     - As an example, this script was run using the following arguments.
-
 ```{bash, echo = T, tidy = T, eval = F}
 nohup Rscript \
 /home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_withReadGroups_1pass.R \
