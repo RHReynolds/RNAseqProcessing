@@ -7,19 +7,17 @@
 - Add the binary executable to PATH.
 
 ```{bash download/install STAR, echo = T, tidy = T, eval = F}
-
 wget https://github.com/alexdobin/STAR/archive/2.7.0a.zip
 unzip 2.7.0a.zip
 export PATH=$PATH:/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/
-
 ```
 
 ## Generating genome indexes
 
 - This generates a genome index that is used by STAR for mapping reads, improving the efficiency of alignment by not having to search across the entire genome, instead grouping regions of similar sequence into indexes.
 - Requires as an input:
-    - The .fasta file detailing the genome
-    - A .gtf file detailing the annotations (check whether annotation has since been updated)
+    1. The .fasta file detailing the genome
+    2. A .gtf file detailing the annotations (check whether annotation has since been updated)
 - *Note:* As users might have varying read lengths they may have to generate a new genome index specific to their read length.
     
 ### Downloading the .fasta file
@@ -27,10 +25,8 @@ export PATH=$PATH:/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/
 - In general, as long as the build does not change this file can be used repeatedly to generate genome indexes.
 
 ```{bash Download ensembl hg38 DNA reference, echo = T, tidy = F, eval = F}
-
 wget ftp.ensembl.org/pub/release-97/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
-
 ```
 - Version number added to file name to distinguish from current versions in folder.
 
@@ -40,10 +36,8 @@ gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 - As an example, version 97 was downladed using the following command in the directory `/data/references/ensembl/gtf_gff3/v97`:
 
 ```{bash Download gtf, echo = T, tidy = F, eval = F}
-
 wget ftp://ftp.ensembl.org/pub/release-97/gtf/homo_sapiens/Homo_sapiens.GRCh38.97.gtf.gz
 gunzip Homo_sapiens.GRCh38.97.gtf.gz
-
 ```
 
 ### Generating the genome index
@@ -56,14 +50,12 @@ gunzip Homo_sapiens.GRCh38.97.gtf.gz
 - Some genome indices have already been generated for different versions of ensembl. Please see the directory `/data/STAR_data/`. Within each version folder, you will find additional folders named "sjdbOverhang_XXX", with XXX specifying the overhang used. 
     
 ```{bash STAR genome index generation, echo = T, tidy = T, eval = F}
-
 STAR --runThreadN 10 \
 --runMode genomeGenerate \
 --genomeDir /data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99 \
 --genomeFastaFiles /data/references/fasta/Homo_sapiens.GRCh38.97.dna.primary_assembly.fa \
 --sjdbGTFfile /data/references/ensembl/gtf_gff3/v97/Homo_sapiens.GRCh38.97.gtf \
 --sjdbOverhang 99
-
 ```
 
 ## Mapping FASTQs with STAR
@@ -75,7 +67,6 @@ STAR --runThreadN 10 \
 - Many of the parameters set below were set according to the ENCODE standard options for long RNA-seq pipeline (as per [STAR manual 2.7.1a](STARmanual.pdf))
 
 ```{r STAR function, echo = T, tidy = T, eval = F}
-
   system(command = str_c("STAR",
                            " --runThreadN ", threads_STAR,
                            " --genomeDir ", genome_index_path,
@@ -95,7 +86,6 @@ STAR --runThreadN 10 \
                            "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
                            "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
                            ))
-
 ```
 
 - To perform mapping use [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R). Call the script using: `Rscript /path/to/script/STAR_alignment_withReadGroups_1pass.R -h`. The `-h` flag will list the required inputs and optional arguments.
@@ -104,7 +94,6 @@ STAR --runThreadN 10 \
     - As an example, this script was run using the following arguments.
 
 ```{bash, echo = T, tidy = T, eval = F}
-
 nohup Rscript \
 /home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_withReadGroups_1pass.R \
 /data/RNAseq_PD/tissue_polyA_samples/QC/fastp \
@@ -114,7 +103,6 @@ nohup Rscript \
 --sample_suffix=_S.* \
 --read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_1pass.log&
-
 ```
 
 ## 2-pass mapping
