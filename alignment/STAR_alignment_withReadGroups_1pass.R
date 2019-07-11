@@ -92,7 +92,7 @@ for(i in seq_along(sample_names_uniq)){
                            "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
                            "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
                            "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
-                           ))
+    ))
 
 
   } else{
@@ -116,7 +116,7 @@ for(i in seq_along(sample_names_uniq)){
                            "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
                            "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
                            "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
-                           ))
+    ))
 
 
   }
