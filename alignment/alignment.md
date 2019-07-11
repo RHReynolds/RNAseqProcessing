@@ -102,11 +102,36 @@ nohup Rscript \
 /data/RNAseq_PD/tissue_polyA_samples/STAR \
 --sample_prefix=NM...._ \
 --sample_suffix=_S.* \
---read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt
+--read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_1pass.log&
 ```
 
-## 2-pass mapping
+## Multi-sample 2-pass mapping
 - For sensitive novel junction discovery, 2-pass mapping is recommended. This can be run using:
-    1. Multi-sample 2-pass mapping: this is currently implemented in [STAR_alignment_multi2pass.R](STAR_alignment_multi2pass.R)
-    2. Per-sample 2-pass mapping: currently not implemented in a script.
+    1. Multi-sample 2-pass mapping: implemented in this package.
+    2. Per-sample 2-pass mapping: currently not implemented in this package.
+- Multi-sample 2-pass mapping, is performed in three steps:
+    1. Run 1st mapping pass for all samples with "usual" parameters using [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
+    2. Merge all SJ.out.tab files from all samples and remove duplicated junctions using [STAR_splice_junction_merge.R](STAR_splice_junction_merge.R).
+    3. Run 2nd mapping pass for all samples with "usual" parameters, and the addition of the merged SJ.out.tab file in the `--sjdbFileChrStartEnd` flag. This is implemented in [STAR_alignment_multi2pass.R](STAR_alignment_multi2pass.R).
+    
+- As an example, step 2 and 3 were performed as a continuation of the commands in the last section, using the following commands:
+
+```{bash, echo = T, tidy = T, eval = F}
+# Merge SJ.out.tab files
+Rscript /home/rreynolds/projects/RNAseqProcessing/alignment/STAR_splice_junction_merge.R /data/RNAseq_PD/tissue_polyA_samples/STAR
+
+# Run 2nd pass mapping
+nohup Rscript \
+/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_multi2pass.R \
+/data/RNAseq_PD/tissue_polyA_samples/QC/fastp \ 
+/data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99 \
+/data/RNAseq_PD/tissue_polyA_samples/STAR \
+/data/RNAseq_PD/tissue_polyA_samples/STAR/all_samples_non_duplicated_junctions.SJ.out.tab \
+--sample_prefix=NM...._ \
+--sample_suffix=_S.* \
+--read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
+&>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_2pass.log&
+```
+
+

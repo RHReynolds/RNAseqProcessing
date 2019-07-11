@@ -10,7 +10,7 @@ library(RNAseqProcessing)
 
 arguments <- parse_args(OptionParser(usage = "%prog",
                                      prog = "STAR: multi-sample 2nd pass mapping",
-                                     description="Script for running 2nd pass mapping with STAR. Required inputs:\n <fastq_dir_paths>: Directory paths to fastq separated by ','.\n <genome_index_path>: Path to genome index used by STAR for mapping reads.\n <output_path>: Path to output folder.\n <sj_path>: Path to merged and filtered SJ.out.tab from all samples. This should contain the following columns (in this order), as in the original SJ.out.tab files: 1. chromosome\n 2. first base of intron (1-based)\n 3. last base of intron (1-based)\n 4. strand\n 5. intron motif\n 6. In annotation?\n 7. number of uniquely mapping reads crossing the junction\n 8. number of multi-mapping reads crossing the junction\n 9. maximum spliced alignment overhang\n See STAR manual for more details.",
+                                     description="Script for running 2nd pass mapping with STAR. Required inputs:\n <fastq_dir_paths>: Directory paths to fastq separated by ','.\n <genome_index_path>: Path to genome index used by STAR for mapping reads.\n <output_path>: Path to output folder.\n <sj_path>: Path to merged (and potentially filtered) SJ.out.tab from all samples. This should contain the following columns:\n 1. chromosome\n 2. first base of intron (1-based)\n 3. last base of intron (1-based).\n These columns are the same as the first three found in the original SJ.out.tab files. See STAR manual for more details.",
                                      option_list=list(
                                        make_option(c("-p","--sample_prefix"), default = "", help="If the fastq paths have a prefix before the sample name (as is often added by the sequencer), this needs to be given here. E.g. Fastq file name may be NM3330_PDC05_A1A2_GM-T_S4_R1_001_QC.fastq.gz. As sample name is 'PDC05_A1A2_GM-T', will need to provide the argument 'NM3330_' or 'NM...._' if want it to be generalisable to other NM tags. [default: Empty string]"),
                                        make_option(c("-s","--sample_suffix"), default = "", help="The text (or regex) that needs to be excluded from the tail end of the filename to get the sample name. E.g. For M3330_PDC05_A1A2_GM-T_S4_R1_001_QC.fastq.gz, would use argument '_S.*' to remove everything after _S. [default: Empty string]"),
@@ -23,7 +23,7 @@ arguments <- parse_args(OptionParser(usage = "%prog",
 # arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp"
 # arguments$args[2] <- "/data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99"
 # arguments$args[3] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR"
-# arguments$args[4] <- ""
+# arguments$args[4] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/all_samples_non_duplicated_junctions.SJ.out.tab"
 # arguments$opt$sample_prefix <- "NM...._"
 # arguments$opt$sample_suffix <- "_S.*"
 # arguments$opt$read_groups  <- "/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt"
@@ -53,6 +53,16 @@ fastq_df <- RNAseqProcessing::get_fastqc_for_STAR_df(fastq_dir_paths,
 
 sample_names_uniq <- fastq_df$sample_name %>% unique()
 threads_STAR <- 15
+
+# Determine limitSjdb for the --limitSjdbInsertNsj flag
+# Default is 1,000,000 and value should not be vastly bigger than this.
+# If total number of junctions (+ a 20% buffer) in file inputted into --sjdbFileChrStartEnd < 10000000, then set to default, otherwise set to total number of junctions in file.
+n_junc <- read_delim(file = sj_path, col_names = FALSE, col_types = "cdd", delim = "\t") %>% nrow()
+if ((n_junc * 1.2) <= 1000000) {
+  limitSjdb <- 1000000
+} else{
+  limitSjdb <- round(n_junc * 1.2)
+}
 
 print(str_c(Sys.time(), " - STAR alignment for samples: ", str_c(sample_names_uniq, collapse = ", ")))
 
@@ -94,7 +104,8 @@ for(i in seq_along(sample_names_uniq)){
                            "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
                            "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
                            "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
-                           "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
+                           "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor. Default is 3.
+                           "--limitSjdbInsertNsj ", limitSjdb # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
     ))
 
 
@@ -119,7 +130,9 @@ for(i in seq_along(sample_names_uniq)){
                            "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
                            "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
                            "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
-                           "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
+                           "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor. Default is 3.
+                           "--limitSjdbInsertNsj ", limitSjdb # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
+
     ))
 
 
