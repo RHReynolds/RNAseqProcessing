@@ -30,9 +30,11 @@ opt <- arguments$opt
 sj_df <- RNAseqProcessing::load_sj_df(sj_dir_path = sj_dir_path)
 
 unique_junc <- sj_df %>%
-  tidyr::unite(col = "junction", chr, intron_start, intron_end, sep = ":", remove = FALSE) %>%
+  tidyr::unite(col = "junction", chr, intron_start, intron_end, strand, sep = ":", remove = FALSE) %>%
   dplyr::distinct(junction, .keep_all = T) %>%
-  dplyr::select(chr, intron_start, intron_end)
+  dplyr::select(chr, intron_start, intron_end, strand) %>%
+  dplyr::mutate(strand = ifelse(strand == 0, ".",
+                                ifelse(strand == 1, "+", "-")))
 
 # If '-o' flag enabled, output files to different output path
 if(!is.null(opt$output_path)){
