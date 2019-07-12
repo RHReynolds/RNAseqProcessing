@@ -4,10 +4,18 @@
 \alias{get_bam_df}
 \title{Function to make a data frame of bam paths for sorting and indexing.}
 \usage{
-get_bam_df(bam_dir_paths)
+get_bam_df(bam_dir_paths, prefix_to_sample_name = "",
+  to_exclude_to_get_sample_name = "")
 }
 \arguments{
 \item{bam_dir_paths}{Path names in which bam files are located.}
+
+\item{prefix_to_sample_name}{Specify if samples have been given a prefix to
+their original name.}
+
+\item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be excluded
+from the tail end of the filename to get the sample name. If no argument
+provided, defaults to empty string.}
 }
 \value{
 Dataframe with file paths.

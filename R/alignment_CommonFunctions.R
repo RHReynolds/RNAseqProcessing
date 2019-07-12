@@ -31,11 +31,16 @@ get_fastqc_for_STAR_df <- function(fastq_dir_paths, prefix_to_sample_name = "", 
 #' Function to make a data frame of bam paths for sorting and indexing.
 #'
 #' @param bam_dir_paths Path names in which bam files are located.
+#' @param prefix_to_sample_name Specify if samples have been given a prefix to
+#'   their original name.
+#' @param to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
+#'   from the tail end of the filename to get the sample name. If no argument
+#'   provided, defaults to empty string.
 #'
 #' @return Dataframe with file paths.
 #' @export
 
-get_bam_df <- function(bam_dir_paths){
+get_bam_df <- function(bam_dir_paths, prefix_to_sample_name = "", to_exclude_to_get_sample_name = ""){
 
   bam_df <-
     data_frame(bam_paths_full =
@@ -44,7 +49,8 @@ get_bam_df <- function(bam_dir_paths){
                  bam_paths_full %>%
                  str_replace("/.*/", ""),
                sample_name = bam_filename %>%
-                 str_replace("_.*", ""))
+                 str_replace(str_c("^", prefix_to_sample_name), "") %>%
+                 str_replace(str_c(to_exclude_to_get_sample_name,"$"), ""))
 
   return(bam_df)
 
