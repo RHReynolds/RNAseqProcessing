@@ -18,9 +18,9 @@ arguments <- parse_args(OptionParser(usage = "%prog",
 
 # # Comment in if want to test run script
 # arguments <- list()
-# arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR"
+# arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/SJ_out_1pass"
 # arguments$opt$output_path  <- ""
-# arguments$opt$filter_number_of_samples <- NULL
+# arguments$opt$filter_number_of_samples <- 5
 
 # Positional arguments
 sj_dir_path <- arguments$args[1]
