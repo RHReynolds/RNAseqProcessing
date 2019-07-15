@@ -10,7 +10,7 @@ library(RNAseqProcessing)
 
 arguments <- parse_args(OptionParser(usage = "%prog",
                                      prog = "STAR: multi-sample 2nd pass mapping",
-                                     description="Script for running 2nd pass mapping with STAR. Required inputs:\n <fastq_dir_paths>: Directory paths to fastq separated by ','.\n <genome_index_path>: Path to genome index used by STAR for mapping reads.\n <output_path>: Path to output folder.\n <sj_path>: Path to merged (and potentially filtered) SJ.out.tab from all samples. This should contain the following columns:\n 1. chromosome\n 2. first base of intron (1-based)\n 3. last base of intron (1-based).\n These columns are the same as the first three found in the original SJ.out.tab files. See STAR manual for more details.",
+                                     description="Script for running 2nd pass mapping with STAR. Required inputs:\n <fastq_dir_paths>: Directory paths to fastq separated by ','.\n <genome_index_path>: Path to genome index used by STAR for mapping reads.\n <output_path>: Path to output folder.\n <sj_path>: Path to merged (and potentially filtered) SJ.out.tab from all samples. This should contain the following columns:\n 1. chromosome\n 2. first base of intron (1-based)\n 3. last base of intron (1-based).\n 4. Strand.\n These columns are the same as the first three found in the original SJ.out.tab files. See STAR manual for more details.",
                                      option_list=list(
                                        make_option(c("-p","--sample_prefix"), default = "", help="If the fastq paths have a prefix before the sample name (as is often added by the sequencer), this needs to be given here. E.g. Fastq file name may be NM3330_PDC05_A1A2_GM-T_S4_R1_001_QC.fastq.gz. As sample name is 'PDC05_A1A2_GM-T', will need to provide the argument 'NM3330_' or 'NM...._' if want it to be generalisable to other NM tags. [default: Empty string]"),
                                        make_option(c("-s","--sample_suffix"), default = "", help="The text (or regex) that needs to be excluded from the tail end of the filename to get the sample name. E.g. For M3330_PDC05_A1A2_GM-T_S4_R1_001_QC.fastq.gz, would use argument '_S.*' to remove everything after _S. [default: Empty string]"),
@@ -57,7 +57,7 @@ threads_STAR <- 15
 # Determine limitSjdb for the --limitSjdbInsertNsj flag
 # Default is 1,000,000 and value should not be vastly bigger than this.
 # If total number of junctions (+ a 20% buffer) in file inputted into --sjdbFileChrStartEnd < 10000000, then set to default, otherwise set to total number of junctions in file.
-n_junc <- read_delim(file = sj_path, col_names = FALSE, col_types = "cdd", delim = "\t") %>% nrow()
+n_junc <- read_delim(file = sj_path, col_names = FALSE, col_types = "cddc", delim = "\t") %>% nrow()
 if ((n_junc * 1.2) <= 1000000) {
   limitSjdb <- 1000000
 } else{
