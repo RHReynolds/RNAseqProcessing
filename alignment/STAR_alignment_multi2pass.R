@@ -23,7 +23,7 @@ arguments <- parse_args(OptionParser(usage = "%prog",
 # arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp"
 # arguments$args[2] <- "/data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99"
 # arguments$args[3] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR"
-# arguments$args[4] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/all_samples_non_duplicated_junctions.SJ.out.tab"
+# arguments$args[4] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/merged_junctions.SJ.out.tab"
 # arguments$opt$sample_prefix <- "NM...._"
 # arguments$opt$sample_suffix <- "_S.*"
 # arguments$opt$read_groups  <- "/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt"
@@ -78,11 +78,6 @@ for(i in seq_along(sample_names_uniq)){
     dplyr::filter(sample_name == sample_name_to_filter) %>%
     .[["fastq_paths_trimmed_paired"]]
 
-  # Filter read_groups dataframe for correct sample
-  read_group <-
-    read_groups %>%
-    dplyr::filter(sample_name == sample_name_to_filter)
-
   if(length(fastq_per_sample_paths_trimmed_paired) != 2) { stop(str_c("number fastq files for ", sample_name_to_filter, " not 2, expected because of paired-end")) }
 
   if(is.null(opt$read_groups)){
@@ -110,6 +105,11 @@ for(i in seq_along(sample_names_uniq)){
 
 
   } else{
+
+    # Filter read_groups dataframe for correct sample
+    read_group <-
+      read_groups %>%
+      dplyr::filter(sample_name == sample_name_to_filter)
 
     # Just contains additional --outSAMattrRGline flag
     system(command = str_c("STAR",
