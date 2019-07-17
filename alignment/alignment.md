@@ -112,7 +112,7 @@ nohup Rscript \
     2. Per-sample 2-pass mapping: currently not implemented in this package.
 - Multi-sample 2-pass mapping, is performed in three steps:
     1. Run 1st mapping pass for all samples with "usual" parameters using [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
-    2. Merge all SJ.out.tab files from all samples and remove duplicated junctions using [STAR_splice_junction_merge.R](STAR_splice_junction_merge.R).
+    2. Merge all SJ.out.tab files from all samples and remove duplicated junctions using [STAR_splice_junction_merge.R](STAR_splice_junction_merge.R). Note that this script also has an optional flag ```-f```, which adds a filter for the number of samples a junction must be found in to be included in the final merged file. E.g. if set to 5, then only junctions found in 5 or more samples will be included.
     3. Run 2nd mapping pass for all samples with "usual" parameters, and the addition of the merged SJ.out.tab file in the `--sjdbFileChrStartEnd` flag. This is implemented in [STAR_alignment_multi2pass.R](STAR_alignment_multi2pass.R).
     
 - As an example, step 2 and 3 were performed as a continuation of the commands in the last section, using the following commands:
