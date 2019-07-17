@@ -40,4 +40,5 @@ Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which 
  [STAR_alignment_multi2pass.R](alignment/STAR_alignment_multi2pass.R) | Alignment | Performs multi-sample 2-pass mapping. This is recommended for a study with multiple samples, and requires that 1-pass mapping has been performed, all junctions from each SJ.out.tab in the 1st pass have been collated. If the total number of collated non-duplicated junctions is much greater than 1,000,000 consider filtering the junctions, otherwise process will be slower. E.g. For a sample of ~200M 100bp PE reads, with ~1.1M splice junctions, alignment takes 2-3 hours, as opposed to 20-30 minutes (without the splice junctions included). Filtering will be study-dependent. For details of alignment process, read the [alignment workflow](alignment/alignment.md). | RHR
  postalignmentQC_RSeQC.R | Post-alignment QC | **---Work in progres---** | DZ & RHR
 
-
+## Example workflow
+---Add link to lucidchart flow diagram ---
