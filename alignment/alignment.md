@@ -1,5 +1,3 @@
-** WORK IN PROGRESS **
-
 ## Download + installation 
 
 - Star downloaded from https://github.com/alexdobin/STAR/releases. Current version is 2.7.0a.
