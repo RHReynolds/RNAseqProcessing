@@ -60,7 +60,7 @@ get_bam_df <- function(bam_dir_paths, prefix_to_sample_name = "", to_exclude_to_
 #'
 #' @param sj_dir_path Path to directory containing splice junctions files (SJ.out.tab).
 #'
-#' @return
+#' @return Returns a dataframe of all splice junctions from SJ.out.tab files.
 #' @export
 #'
 
@@ -93,3 +93,132 @@ load_sj_df <- function(sj_dir_path){
   return(master_df)
 
 }
+
+#' Function to return a string containing the non sampleID dependent STAR parameters set.
+#' To be used in the 1st and 2nd pass alignment.
+#'
+#' @return String with the fixed STAR parameters.
+#' @export
+#'
+
+get_star_parameters_set <-function(){
+
+  return(str_c(" --outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
+               "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM,
+               "--outFilterType BySJout ", # removes spurious split reads
+               "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
+               "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
+               "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
+               "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
+               "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
+               "--alignMatesGapMax 1000000 ", # max gap between pair mates. As per ENCODE options.
+               "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
+               "--alignSJDBoverhangMin 3 " # minimum annotated split read anchor. Default is 3.
+  ))
+
+}
+
+#' Call samtools sort and index tools
+#'
+#' @param bam_per_sample_paths File path for an individual sample .bam file.
+#' @param output_path Output path for sorted and indexed .bam file
+#' @param sample_name Sample name.
+#'
+#' @return Runs system commands for sorting and indexing .bam file.
+#' @export
+#'
+
+call_samtools_sort_index <- function(bam_per_sample_paths, output_path, sample_name){
+
+  system(command = str_c("samtools sort -m 1000000000 ", bam_per_sample_paths, " -o ",
+                         output_path, "/", sample_name, "_Aligned.sortedBysamtools.out.bam"))
+
+  system(command = str_c("samtools index ", output_path, "/", sample_name, "_Aligned.sortedBysamtools.out.bam"))
+
+}
+
+
+
+#' Call RSeQC modules
+#'
+#' @param bam_per_sample_paths File path for an individual sample .bam file.
+#' @param bed_gene_model_path Reference gene model in bed format.
+#' @param output_path Output directory, where RSeQC outputs will be outputted.
+#' @param read_length Read length.
+#' @param sample_name Sample name.
+#' @param wait_flag Call flag with "TRUE", if memory available is <= 50%.
+#'
+#' @return Runs system commands for RSeQC modules.
+#' @export
+
+call_RSeQC_modules <- function(bam_per_sample_paths, bed_gene_model_path, output_path, read_length, sample_name, wait_flag = NULL){
+
+  # Construct vector of T/F for modules, depending on memory availability.
+  if(!is.null(wait_flag)){
+
+    # If wait_flag = T, this will mean a few more of the system commands have wait = T.
+    # wait = T in system() will force the system to wait for the to finish before next system command called.
+    wait_flags <- c(F, F, T, F, F, T, F, F, F, T)
+
+  } else{
+
+    # All, but the last system command, are set to wait = F.
+    # Thus, all system commands will be called simultaneously and run in parallel.
+    # Only last process has wait = T, to force system to wait for this process to finish.
+    wait_flags <- c(F, F, F, F, F, F, F, F, F, T)
+
+  }
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/clipping_profile.py -i ", bam_per_sample_paths, ' -s "PE" -o ',
+                         output_path, "/", sample_name),
+         wait = wait_flags[1])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/inner_distance.py -i ", bam_per_sample_paths,
+                         " -r ", bed_gene_model_path,
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[2])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/junction_annotation.py -i ", bam_per_sample_paths,
+                         " -r ", bed_gene_model_path,
+                         " -m 20", # minimum intron length, as per STAR settings
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[3])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/junction_saturation.py -i ", bam_per_sample_paths,
+                         " -r ", bed_gene_model_path,
+                         " -m 20", # minimum intron length, as per STAR settings
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[4])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/mismatch_profile.py -i ", bam_per_sample_paths,
+                         " -l ", read_length,
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[5])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/read_distribution.py -i ", bam_per_sample_paths,
+                         " -r ", bed_gene_model_path," > ",
+                         output_path, "/", sample_name, "_read_distribution.txt"),
+         wait = wait_flags[6])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/read_duplication.py -i ", bam_per_sample_paths,
+                         " -u 20000", # upper limit of reads' occurrence. Limit only used for plotting.
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[7])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/read_GC.py -i ", bam_per_sample_paths,
+                         " -o ", output_path, "/", sample_name),
+         wait = wait_flags[8])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/RNA_fragment_size.py -i ", bam_per_sample_paths,
+                         " -r ", bed_gene_model_path, " > ",
+                         output_path, "/", sample_name, "_RNA_fragment_size.txt"),
+         wait = wait_flags[9])
+
+  system(command = str_c("/tools/RSeQC-2.6.4/scripts/bam_stat.py -i ", bam_per_sample_paths, " > ",
+                         output_path, "/", sample_name, "_bam_stat.txt"),
+         wait = wait_flags[10])
+
+}
+
+
+

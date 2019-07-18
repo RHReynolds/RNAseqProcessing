@@ -80,31 +80,15 @@ for(i in seq_along(sample_names_uniq)){
 
   if(length(fastq_per_sample_paths_trimmed_paired) != 2) { stop(str_c("number fastq files for ", sample_name_to_filter, " not 2, expected because of paired-end")) }
 
-  if(is.null(opt$read_groups)){
+  star_cmd <- str_c("STAR",
+                    " --runThreadN ", threads_STAR,
+                    " --genomeDir ", genome_index_path,
+                    " --sjdbFileChrStartEnd ", sj_path,
+                    " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
+                    " --readFilesCommand zcat ", # because fastq's are zipped
+                    "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "))
 
-    system(command = str_c("STAR",
-                           " --runThreadN ", threads_STAR,
-                           " --genomeDir ", genome_index_path,
-                           " --sjdbFileChrStartEnd ", sj_path,
-                           " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
-                           " --readFilesCommand  zcat ", # because fastq's are zipped
-                           "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "),
-                           "--outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
-                           "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
-                           "--outFilterType BySJout ", # removes spurious split reads
-                           "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
-                           "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
-                           "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
-                           "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
-                           "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
-                           "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
-                           "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
-                           "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor. Default is 3.
-                           "--limitSjdbInsertNsj ", format(limitSjdb, scientific=F) # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
-    ))
-
-
-  } else{
+  if(!is.null(opt$read_groups)){
 
     # Filter read_groups dataframe for correct sample
     read_group <-
@@ -112,32 +96,16 @@ for(i in seq_along(sample_names_uniq)){
       dplyr::filter(sample_name == sample_name_to_filter)
 
     # Just contains additional --outSAMattrRGline flag
-    system(command = str_c("STAR",
-                           " --runThreadN ", threads_STAR,
-                           " --genomeDir ", genome_index_path,
-                           " --sjdbFileChrStartEnd ", sj_path,
-                           " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
-                           " --readFilesCommand  zcat ", # because fastq's are zipped
-                           "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "),
-                           "--outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
-                           "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
-                           "--outSAMattrRGline ", str_c("ID:", read_group$full_name, " PU:", read_group$PU, " SM:", read_group$sample_name, " PL:Illumina LB:xxx "), # SAM/BAM read group line
-                           "--outFilterType BySJout ", # removes spurious split reads
-                           "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
-                           "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
-                           "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
-                           "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
-                           "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
-                           "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
-                           "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
-                           "--alignSJDBoverhangMin 3 ", # minimum annotated split read anchor. Default is 3.
-                           "--limitSjdbInsertNsj ", format(limitSjdb, scientific=F) # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
-
-    ))
-
+    star_cmd <- str_c(star_cmd ,
+                      "--outSAMattrRGline ", str_c("ID:", read_group$full_name, " PU:", read_group$PU, " SM:", read_group$sample_name, " PL:Illumina LB:xxx ") # SAM/BAM read group line
+    )
 
   }
 
+  star_cmd <- str_c(star_cmd,
+                    RNAseqProcessing::get_star_parameters_set())
+
+  system(command = star_cmd)
 
 }
 
