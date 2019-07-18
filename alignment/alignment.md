@@ -133,5 +133,23 @@ nohup Rscript \
 --read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_2pass.log&
 ```
+## Post-alignment QC
 
+### Sorting and indexing .bam files
+- Many downstream applications require sorting and indexing of the .bam files. While STAR should, in theory, sort by co-ordinate, files did not seem to work with RSeQC, therefore built into QC script a sorting and indexing using `samtools`. 
+- **Note:** once the script has sorted and indexed the original .bam file outputted by STAR, the original STAR .bam file will be removed, such that only the samtools-sorted .bam file remains. 
 
+### RSeQC
+- Used RSeQC for QC following alignment. 
+- RSeQC Modules implemented include:
+    - geneBody_coverage.py: calculates the RNA-seq reads coverage over gene body.
+    - clipping_profile.py: estimates clipping profile of RNA-seq reads from .bam or .sam file. 
+    - inner_distance.py: calculates the inner distance between read pairs.
+    - junction_annotation.py: this compares detected splice junctions to a reference gene model.
+    - junction_saturation.py: this module checks for saturation by resampling 5%, 10%, 15%, ..., 95% of total alignments from the .bam file and then detects splice junctions from each subset and compares them to the reference gene model.
+    - mismatch_profile.py: calculates the distribution of mismatches across reads 
+    - read_distribution.py: calculates how mapped reads were distributed over genomic feature e.g. exons, introns, intergenic, etc.
+    - read_duplication.py
+    - read_GC.py
+    - bam_stat.py: summarises mapping statistics of .bam file
+- For more details refer to: http://rseqc.sourceforge.net/
