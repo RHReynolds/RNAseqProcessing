@@ -141,6 +141,17 @@ nohup Rscript \
 - Many downstream applications require sorting and indexing of the .bam files. While STAR should, in theory, sort by co-ordinate, files did not seem to work with RSeQC, therefore built into [post_alignment_QC_RSeQC.R](../QC/post_alignment_QC_RSeQC.R) script a sorting and indexing using `samtools`. 
 - **Note:** once the script has sorted and indexed the original .bam file outputted by STAR, the original STAR .bam file will be removed, such that only the samtools-sorted .bam file remains. 
 
+### Converting gtf to bed format
+- Several of the RSeQC modules require a reference gene model in the bed format. 
+- Several already available on the server. Please check following directory: `/data/references/ensembl/bed/`
+- If unavailable, can convert a .gtf to .bed format using the following commands:
+
+```{bash, eval = F, echo = T}
+/tools/ea-utils/ExpressionAnalysis-ea-utils-bd148d4/clipper/gtf2bed \
+/data/references/ensembl/gtf_gff3/v97/Homo_sapiens.GRCh38.97.gtf \
+> /data/references/ensembl/bed/v97/ensembl_GRCh38_v97.bed
+```
+
 ### RSeQC
 - Used RSeQC for QC following alignment. 
 - RSeQC Modules implemented include:
