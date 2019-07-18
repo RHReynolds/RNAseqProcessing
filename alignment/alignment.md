@@ -119,7 +119,11 @@ nohup Rscript \
 
 ```{bash, echo = T, tidy = T, eval = F}
 # Merge SJ.out.tab files
-Rscript /home/rreynolds/projects/RNAseqProcessing/alignment/STAR_splice_junction_merge.R /data/RNAseq_PD/tissue_polyA_samples/STAR
+nohup Rscript \
+/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_splice_junction_merge.R \
+/data/RNAseq_PD/tissue_polyA_samples/STAR/SJ_out_1pass \
+-o /data/RNAseq_PD/tissue_polyA_samples/STAR/ \
+&>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_SJ_filtering.log&
 
 # Run 2nd pass mapping
 nohup Rscript \
@@ -127,7 +131,7 @@ nohup Rscript \
 /data/RNAseq_PD/tissue_polyA_samples/QC/fastp \ 
 /data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99 \
 /data/RNAseq_PD/tissue_polyA_samples/STAR \
-/data/RNAseq_PD/tissue_polyA_samples/STAR/all_samples_non_duplicated_junctions.SJ.out.tab \
+/data/RNAseq_PD/tissue_polyA_samples/STAR/merged_junctions.SJ.out.tab \
 --sample_prefix=NM...._ \
 --sample_suffix=_S.* \
 --read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
@@ -153,3 +157,17 @@ nohup Rscript \
     - *read_GC.py*
     - *bam_stat.py*: summarises mapping statistics of .bam file
 - For more details refer to: http://rseqc.sourceforge.net/
+
+### Running the post-alignment QC script
+As an example:
+
+```{bash, echo = T, tidy = T, eval = F}
+nohup Rscript \
+/home/rreynolds/projects/RNAseqProcessing/QC/post_alignment_QC_RSeQC.R \
+/data/RNAseq_PD/tissue_polyA_samples/STAR \
+/data/RNAseq_PD/tissue_polyA_samples/QC/ \
+/data/references/ensembl/bed/v97/ensembl_GRCh38_v97.bed \
+100 \
+--sample_suffix=_Aligned.sortedByCoord.out.bam \
+&>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_nuclear_totalRNA_postalignment_QC.log&
+```
