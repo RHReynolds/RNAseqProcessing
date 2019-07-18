@@ -171,3 +171,12 @@ nohup Rscript \
 --sample_suffix=_Aligned.sortedByCoord.out.bam \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_nuclear_totalRNA_postalignment_QC.log&
 ```
+## Multi-QC
+Following on from post-alignment QC, it is possible to gather a full report of all QC, including pre-alignment QC. As an example:
+
+```{bash, echo = T, tidy = T, eval = F}
+multiqc /data/RNAseq_PD/tissue_polyA_samples/ \
+-o /data/RNAseq_PD/tissue_polyA_samples/QC/multiqc/ \
+--ignore /data/RNAseq_PD/tissue_polyA_samples/raw_data/ \
+-n PD_tissue_polyA_full_report
+```
