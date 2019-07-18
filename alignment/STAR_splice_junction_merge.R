@@ -64,7 +64,7 @@ if(!is.null(opt$filter_number_of_samples)){
 if(!opt$output_path == ""){
 
   cat("Writing file to:", opt$output_path, "\n")
-  write_delim(x = filtered_junc, path = str_c(output_path, "/merged_junctions.SJ.out.tab"), col_names = F, delim = "\t")
+  write_delim(x = filtered_junc, path = str_c(opt$output_path, "/merged_junctions.SJ.out.tab"), col_names = F, delim = "\t")
 
 } else {
 
