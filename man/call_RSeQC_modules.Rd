@@ -2,7 +2,7 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{call_RSeQC_modules}
 \alias{call_RSeQC_modules}
-\title{Call RSeQC modules}
+\title{Call RSeQC modules.}
 \usage{
 call_RSeQC_modules(bam_per_sample_paths, bed_gene_model_path, output_path,
   read_length, sample_name, wait_flag = NULL)
@@ -24,5 +24,5 @@ call_RSeQC_modules(bam_per_sample_paths, bed_gene_model_path, output_path,
 Runs system commands for RSeQC modules.
 }
 \description{
-Call RSeQC modules
+Call RSeQC modules.
 }

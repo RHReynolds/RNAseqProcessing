@@ -7,7 +7,8 @@
 load_sj_df(sj_dir_path)
 }
 \arguments{
-\item{sj_dir_path}{Path to directory containing splice junctions files (SJ.out.tab).}
+\item{sj_dir_path}{Path to directory containing splice junctions files
+(SJ.out.tab).}
 }
 \value{
 Returns a dataframe of all splice junctions from SJ.out.tab files.

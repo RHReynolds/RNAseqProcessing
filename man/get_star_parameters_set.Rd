@@ -2,8 +2,7 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{get_star_parameters_set}
 \alias{get_star_parameters_set}
-\title{Function to return a string containing the non sampleID dependent STAR parameters set.
-To be used in the 1st and 2nd pass alignment.}
+\title{Get fixed STAR parameters.}
 \usage{
 get_star_parameters_set()
 }
@@ -11,6 +10,6 @@ get_star_parameters_set()
 String with the fixed STAR parameters.
 }
 \description{
-Function to return a string containing the non sampleID dependent STAR parameters set.
-To be used in the 1st and 2nd pass alignment.
+Function to return a string containing the non sampleID dependent STAR
+parameters set. To be used in the 1st and 2nd pass alignment.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{call_samtools_sort_index}
 \alias{call_samtools_sort_index}
-\title{Call samtools sort and index tools}
+\title{Call samtools sort and index tools.}
 \usage{
 call_samtools_sort_index(bam_per_sample_paths, output_path, sample_name)
 }
@@ -17,5 +17,5 @@ call_samtools_sort_index(bam_per_sample_paths, output_path, sample_name)
 Runs system commands for sorting and indexing .bam file.
 }
 \description{
-Call samtools sort and index tools
+Call samtools sort and index tools.
 }

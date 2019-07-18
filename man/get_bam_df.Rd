@@ -13,9 +13,9 @@ get_bam_df(bam_dir_paths, prefix_to_sample_name = "",
 \item{prefix_to_sample_name}{Specify if samples have been given a prefix to
 their original name.}
 
-\item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be excluded
-from the tail end of the filename to get the sample name. If no argument
-provided, defaults to empty string.}
+\item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be
+excluded from the tail end of the filename to get the sample name. If no
+argument provided, defaults to empty string.}
 }
 \value{
 Dataframe with file paths.

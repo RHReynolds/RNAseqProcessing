@@ -1,11 +1,12 @@
 #' Function to make a data frame of trimmed paths for STAR.
 #'
-#' @param fastq_dir_paths Path names in which trimmed fastq files for alignment are located.
+#' @param fastq_dir_paths Path names in which trimmed fastq files for alignment
+#'   are located.
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
 #'   their original name.
-#' @param to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
-#'   from the tail end of the filename to get the sample name. If no argument
-#'   provided, defaults to empty string.
+#' @param to_exclude_to_get_sample_name The text (or regex) that needs to be
+#'   excluded from the tail end of the filename to get the sample name. If no
+#'   argument provided, defaults to empty string.
 #'
 #' @return Dataframe with file paths.
 #' @export
@@ -33,9 +34,9 @@ get_fastqc_for_STAR_df <- function(fastq_dir_paths, prefix_to_sample_name = "", 
 #' @param bam_dir_paths Path names in which bam files are located.
 #' @param prefix_to_sample_name Specify if samples have been given a prefix to
 #'   their original name.
-#' @param to_exclude_to_get_sample_name The text (or regex) that needs to be excluded
-#'   from the tail end of the filename to get the sample name. If no argument
-#'   provided, defaults to empty string.
+#' @param to_exclude_to_get_sample_name The text (or regex) that needs to be
+#'   excluded from the tail end of the filename to get the sample name. If no
+#'   argument provided, defaults to empty string.
 #'
 #' @return Dataframe with file paths.
 #' @export
@@ -58,7 +59,8 @@ get_bam_df <- function(bam_dir_paths, prefix_to_sample_name = "", to_exclude_to_
 
 #' Load splice junctions from first pass STAR alignment.
 #'
-#' @param sj_dir_path Path to directory containing splice junctions files (SJ.out.tab).
+#' @param sj_dir_path Path to directory containing splice junctions files
+#'   (SJ.out.tab).
 #'
 #' @return Returns a dataframe of all splice junctions from SJ.out.tab files.
 #' @export
@@ -94,8 +96,10 @@ load_sj_df <- function(sj_dir_path){
 
 }
 
-#' Function to return a string containing the non sampleID dependent STAR parameters set.
-#' To be used in the 1st and 2nd pass alignment.
+#' Get fixed STAR parameters.
+#'
+#' Function to return a string containing the non sampleID dependent STAR
+#' parameters set. To be used in the 1st and 2nd pass alignment.
 #'
 #' @return String with the fixed STAR parameters.
 #' @export
@@ -118,7 +122,7 @@ get_star_parameters_set <-function(){
 
 }
 
-#' Call samtools sort and index tools
+#' Call samtools sort and index tools.
 #'
 #' @param bam_per_sample_paths File path for an individual sample .bam file.
 #' @param output_path Output path for sorted and indexed .bam file
@@ -139,7 +143,7 @@ call_samtools_sort_index <- function(bam_per_sample_paths, output_path, sample_n
 
 
 
-#' Call RSeQC modules
+#' Call RSeQC modules.
 #'
 #' @param bam_per_sample_paths File path for an individual sample .bam file.
 #' @param bed_gene_model_path Reference gene model in bed format.
