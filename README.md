@@ -14,10 +14,8 @@ To use, install from github. This can be done using the following lines of code:
 ``` r
 install.packages("devtools")
 library(devtools)
-install_github("RHReynolds/RNAseqProcessing", auth_token = "")
+install_github("RHReynolds/RNAseqProcessing")
 ```
-
-As this is a private repository, you will have to generate a [personal access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line), and insert this into the ```auth_token``` argument. **Remember to save this token, as you may need it to access other private repositories.**
 
 ### Calling tools from the command line
 The executables for all tools have already been downloaded to `/tools/`. To run all scripts below assumes that you are able to call various tools from the command line without having to point to their exact location on the server. To do this edit your .profile in your home directory:
