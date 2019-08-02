@@ -37,4 +37,4 @@ Then ensure that each tool (fastp, STAR, etc.) has an `export PATH` line, which 
  [post_alignment_QC_RSeQC.R](alignment/post_alignment_QC_RSeQC.R) | Post-alignment QC | Performs (i) sorting and indexing of .bam files using samtools and (ii) runs post-alignment QC, using RSeQC. For details, read the [alignment workflow](alignment/alignment.md). | DZ, KD & RHR
 
 ## Example workflow
-![](https://www.lucidchart.com/publicSegments/view/97298bba-0a82-4f3d-81bc-b0046285bd80/image.png){width=150%}
+![](https://www.lucidchart.com/publicSegments/view/97298bba-0a82-4f3d-81bc-b0046285bd80/image.png)
