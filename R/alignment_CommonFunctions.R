@@ -98,8 +98,8 @@ load_sj_df <- function(sj_dir_path){
 
 #' Get fixed STAR parameters.
 #'
-#' Function to return a string containing the non sampleID dependent STAR
-#' parameters set. To be used in the 1st and 2nd pass alignment.
+#' Function to return a string containing the non-sampleID-dependent STAR
+#' parameters. To be used in the 1st and 2nd pass alignment.
 #'
 #' @return String with the fixed STAR parameters.
 #' @export
@@ -225,4 +225,24 @@ call_RSeQC_modules <- function(bam_per_sample_paths, bed_gene_model_path, output
 }
 
 
+#' Get fixed Salmon parameters.
+#'
+#' Function to return a string containing the non-sampleID-dependent salmon
+#' parameters. To be used with salmon quantification.
+#'
+#' @return String with the fixed salmon parameters.
+#' @export
+#'
 
+get_salmon_parameters_set <-function(){
+
+  return(str_c(" --seqBias", # Perform sequence-specific bias correction
+               " --gcBias", # Salmon will enable it to learn and correct for fragment-level GC biases in the input data
+               " --posBias", # Enables modelling of position-specific fragment start distribution. This feature is considered "experimetnal", but according to Seb this has been the case since Salmon released in 2017. Recommended use anyway.
+               " --validateMappings", # Performs alignment-based verification to ensure quasi-mappings give rise to a reasonable alignment before they are used for further quantification.
+               " --rangeFactorizationBins 4", # The range-factorization feature allows using a data-driven likelihood factorization, which can improve quantification accuracy on certain classes of “difficult” transcripts. Recommended value is 4, as used in the range-factorisation paper: https://academic.oup.com/bioinformatics/article/33/14/i142/3953977#118769759
+               " --useVBOpt", # Use the Variational Bayesian EM to optimise abundance estimates. Default option in Salmon.
+               " --numBootstraps 30" # Number of bootstrap samples to generate for assessment of technical variance in the main abundance estimate produced. Useful for downstream tools (e.g. differential expression) that can use these uncertainty estimates. 30 based on Seb recommendation.
+  ))
+
+}
