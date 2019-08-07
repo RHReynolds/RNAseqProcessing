@@ -18,7 +18,7 @@ arguments <- parse_args(OptionParser(usage = "%prog",
                         positional_arguments = 3)
 
 
-# # Comment in if want to test run script
+# # Comment in if want to test run script arguments
 # arguments <- list()
 # arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/QC/fastp"
 # arguments$args[2] <- "/data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99"

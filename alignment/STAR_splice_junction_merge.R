@@ -16,7 +16,7 @@ arguments <- parse_args(OptionParser(usage = "%prog",
                                        make_option(c("-f,", "--filter_number_of_samples"), default = NULL, help = "Add filter for the number of samples a junction must be found in to be included in the final merged file. E.g. if set to 5, then only junctions found in 5 or more samples included."))),
                         positional_arguments = 1)
 
-# # Comment in if want to test run script
+# # Comment in if want to test run script arguments
 # arguments <- list()
 # arguments$args[1] <- "/data/RNAseq_PD/tissue_polyA_samples/STAR/SJ_out_1pass"
 # arguments$opt$output_path  <- ""

@@ -20,7 +20,7 @@ if (length(args) < 3 | length(args) > 5) {
 
 }
 
-# # Comment in if want to test run script
+# # Comment in if want to test run script arguments
 # args <- list()
 # args[[1]] <- "/data/RNAseq_PD/tissue_polyA_samples/raw_data"
 # args[[2]] <- "/data/RNAseq_PD/tissue_polyA_samples/QC"
