@@ -56,7 +56,7 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 -a /data/references/ensembl/gtf_gff3/v97/Homo_sapiens.GRCh38.97.gtf \
 -g /data/references/fasta/Homo_sapiens.GRCh38.97.dna.primary_assembly.fa \
 -t /data/references/fasta/transcriptome/Homo_sapiens.GRCh38.97.cdna.all.ncrna.fa \
--o /tools/salmon/salmonReferences/ensembl_v97/
+-o /tools/salmon/salmonReferences/ensembl_v97/ 
 
 ```
 3. Generating the decoy-aware salmon index.
@@ -65,7 +65,7 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 --transcripts /tools/salmon/salmonReferences/ensembl_v97/gentrome.fa \
 --index /tools/salmon/salmonReferences/ensembl_v97/Homo_sapiens.GRCh38.97.cdna.all.ncrna_index \
 --decoys /tools/salmon/salmonReferences/ensembl_v97/decoy.txt \
---kmerLen 31
+--kmerLen 31 # Recommended for > 75 bp reads
 
 ```
 
