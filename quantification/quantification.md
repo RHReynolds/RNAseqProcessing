@@ -1,6 +1,17 @@
---WORK IN PROGRESS--
+# Table of contents
+1. [Download + installation](#download)
+2. [Running Salmon](#running_salmon)
+3. [Creating a salmon index](#creating_salmon_index)
+    a. [Example of creating a salmon index ](#example_salmon_index)
+4. [Quantification](#quantification)
+    a. [Determining the library type](#library_type)
+    b. [Running Salmon quantification](#running_salmon_quant)
+    c. [Loading the data post-quantification](#loading_post_quant_data)
+        i. [Creating a named vector](#creating_named_vector)
+        ii. [Creating a transcript-to-gene map](#transcript_to_gene_map)
+    d. [Post-quantification QC checks](#QC_checks)
 
-## Download + installation 
+## Download + installation <a name="download"></a>
 
 - Salmon downloaded from https://github.com/alexdobin/STAR/releases. Current version is 0.14.1.
 - Placed and unzipped into `/tools/salmon/salmon-latest_linux_x86_64/`. These come pre-compiled and the binary executable files are found in `/bin`.
@@ -12,13 +23,13 @@ tar -xvzf salmon-0.14.1_linux_x86_64.tar.gz
 export PATH=$PATH:/tools/salmon/salmon-latest_linux_x86_64/bin/
 ```
 
-## Running Salmon
+## Running Salmon <a name="running_salmon"></a>
 - While Salmon can be run using previously aligned .bam files, it requires that these were aligned directly to the transcriptome rather than to the genome. There are ways of converting genome-aligned .bam files; however, given the speed of Salmon mapping, opted to perform quasi-mapping and quantification (otherwise known as mapping-based mode in Salmon documentation - https://salmon.readthedocs.io/en/latest/index.html).
 - This can be performed in two steps:
     1. Create a salmon index for the transcriptome
     2. Quantification
 
-## Creating a salmon index
+## Creating a salmon index <a name="creating_salmon_index"></a>
 - To create a *decoy-aware* salmon index requires:
     - genome fasta
     - transcriptome fasta
@@ -29,7 +40,7 @@ export PATH=$PATH:/tools/salmon/salmon-latest_linux_x86_64/bin/
 - If not, example code is provided in the next section.
 
 
-### Example of creating a salmon index 
+### Example of creating a salmon index <a name="example_salmon_index"></a>
 1. Transcriptome fasta was created by concatenating the cDNA and ncRNA fastas from ensembl v97. 
 ```{bash, eval = F, echo = T}
 cd /data/references/fasta/transcriptome/
@@ -70,9 +81,9 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 
 ```
 
-## Quantification
+## Quantification <a name="quantification"></a>
 
-### Determining the library type
+### Determining the library type <a name="library_type"></a>
 - To run, Salmon requires that the user specifies the library type. Users then have one of two options:
     1. Allow Salmon to automatically infer the library type by looking at the first few thousand reads of each sample. This is currently the default in the provided script [quantification_Salmon.R](quantification_Salmon.R).
     2. Provide the library type. This can be done in the [quantification_Salmon.R](quantification_Salmon.R) script by calling the `-l/--library_type` flag. A user may know their library type based on the library construction or can use the the `infer_experiment.py` script from `RSeQC` to determine strandedness. For an example command, see below.
@@ -90,7 +101,7 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 - If in doubt how to interpret the output of `infer_experiment.py`, see [here](https://training.galaxyproject.org/archive/2019-05-01/topics/transcriptomics/tutorials/ref-based/tutorial.html).
 
 
-### Running Salmon quantification
+### Running Salmon quantification <a name="running_salmon_quant"></a>
 Example command shown below.
 
 ```{bash, eval = F, echo = T}
@@ -105,7 +116,7 @@ nohup Rscript \
 &>/home/rreynolds/projects/Aim2_PDsequencing_wd/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_salmon_quant.log&
 ```
 
-### Loading the data post-quantification
+### Loading the data post-quantification <a name="loading_post_quant_data"></a>
 - Data can be loaded into R using the packages `tximport` and `DESeq2`. As we have R version 3.4 (and thus an older version of Bioconductor), these must be installed using the following commands:
 ```{R, eval = F, echo = T}
 source("https://bioconductor.org/biocLite.R")
@@ -117,7 +128,7 @@ biocLite("tximport")
     2. A named vector, wherein names refer to sample IDs, and values of the vector refer to file paths where Salmon `quant.sf` files are stored. 
     3. A two-column dataframe linking transcript ids to gene ids. This is required for methods (such as Salmon) that provide transcript-level estimates only. **N.B. The column names are not relevant, but the order of transcript id and gene id must be used.** 
 
-#### Creating a named vector
+#### Creating a named vector <a name="creating_named_vector"></a>
 If [quantification_Salmon.R](quantification_Salmon.R) used, then `quant.sf` files will be stored in a main `salmon_quant/` directory, which contains sub-directories, each of which carries a sample name. Thus, the following example code can be adapted to create a named vector:
 ```{R, eval = F, echo = T}
 # Create dataframe of file paths and sample names
@@ -135,7 +146,7 @@ files <- file_df$file_paths
 names(files) <- file_df$sample_name
 ```
 
-#### Creating a transcript-to-gene map
+#### Creating a transcript-to-gene map <a name="transcript_to_gene_map"></a>
 - The easiest way to generate this is to use a `txdb` generated from the reference transcriptome used in your Salmon quantification. 
 - If ensembl was used, please check the directory `/data/references/ensembl/txdb_sqlite/` to see if this is already available before creating one.
 - If unavailable, a txdb object can be created in a number of ways.
@@ -163,7 +174,7 @@ txi <- tximport::tximport(files = files,
                           dropInfReps = TRUE)
 ```
 
-### Post-quantification QC checks
+### Post-quantification QC checks <a name="QC_checks"></a>
 - Once quantification has been performed and data loaded into R, the user can now perform basic quality-control checks, including:
     - Sex checks -- using gene expression for *XIST* (female-specific, expressed for X-chromosome inactivation) and *DDX3Y* (located on Y-chromosome) determine whether gene expression patterns of sex-specific genes match the sample's assigned sex.
     - Check library sizes and count distributions by plotting. Consider colour by various factors (e.g. RIN) to see whether this explains distributions.
