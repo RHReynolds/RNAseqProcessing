@@ -6,7 +6,7 @@
     3. [Generating the genome index](#generate_genome_index)
 3. [Mapping FASTQs with STAR](#mapping_w_star)
 4. [Multi-sample 2-pass mapping](#multi_2pass)
-5. [Post-alignment QC](post_align_QC)
+5. [Post-alignment QC](#post_align_QC)
     1. [Sorting and indexing .bam files](#sort_and_index)
     2. [Converting gtf to bed format](#gtf_to_bed)
     3. [RSeQC](#RSeQC)
