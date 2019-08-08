@@ -3,7 +3,7 @@
 ## Download + installation 
 
 - Salmon downloaded from https://github.com/alexdobin/STAR/releases. Current version is 0.14.1.
-- Placed and unzipped into "/tools/salmon/salmon-latest_linux_x86_64/". These come pre-compiled and the binary executable files are found in "/bin".
+- Placed and unzipped into `/tools/salmon/salmon-latest_linux_x86_64/`. These come pre-compiled and the binary executable files are found in `/bin`.
 - Optional: add the binary executable to PATH.
 
 ```{bash download/install salmon, echo = T, tidy = T, eval = F}
@@ -23,8 +23,10 @@ export PATH=$PATH:/tools/salmon/salmon-latest_linux_x86_64/bin/
     - genome fasta
     - transcriptome fasta
     - annotation file (GTF)
-- A decoy-aware transcriptome is recomended for selective alignment in Salmon from release 0.13.0 onwards.  When a sequenced fragment originates from an unannotated genomic locus bearing sequence-similarity to an annotated transcript, it can be falsely mapped to the annotated transcript since the relevant genomic sequence is not available to the method. Using of MashMap, such sequence-similar decoy regions can be identified and extracted from the genome. The normal Salmon index is then augmented with these decoy sequences, which are handled in a special manner during mapping and alignment scoring, leading to a reduction in false mappings of such a nature.
+- A decoy-aware transcriptome is recomended for selective alignment in Salmon from release 0.13.0 onwards.  
+- *Why do we need a decoy-aware transcriptome?* When a sequenced fragment originates from an unannotated genomic locus bearing sequence-similarity to an annotated transcript, it can be falsely mapped to the annotated transcript since the relevant genomic sequence is not available to the method. Using MashMap, such sequence-similar decoy regions can be identified and extracted from the genome. The normal Salmon index is then augmented with these decoy sequences, which are handled in a special manner during mapping and alignment scoring, leading to a reduction in false mappings of such a nature.
 - Note: check directory, `/tools/salmon/salmonReferences/`, to see whether a salmon index has already been created.
+- If not, example code is provided in the next section.
 
 
 ### Example of creating a salmon index 
@@ -85,7 +87,7 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 # According to Salmon, this corresponds to ISF.
 
 ```
-- If in doubt how to interpret the output of `infer_experiment.py`, see:  https://training.galaxyproject.org/archive/2019-05-01/topics/transcriptomics/tutorials/ref-based/tutorial.html
+- If in doubt how to interpret the output of `infer_experiment.py`, see [here](https://training.galaxyproject.org/archive/2019-05-01/topics/transcriptomics/tutorials/ref-based/tutorial.html).
 
 
 ### Running Salmon quantification
@@ -113,7 +115,7 @@ biocLite("tximport")
 - To import data you need:
     1. A dataframe detailing all of your sample details e.g. age, sex, RIN, etc.
     2. A named vector, wherein names refer to sample IDs, and values of the vector refer to file paths where Salmon `quant.sf` files are stored. 
-    3. A two-column dataframe linking transcript ids to gene ids. This is required for methods (such as Salmon) that provide transcript-level estimates only. N.B. The column names are not relevant, but the order of transcript id and gene id must be used. 
+    3. A two-column dataframe linking transcript ids to gene ids. This is required for methods (such as Salmon) that provide transcript-level estimates only. **N.B. The column names are not relevant, but the order of transcript id and gene id must be used.** 
 
 #### Creating a named vector
 If [quantification_Salmon.R](quantification_Salmon.R) used, then `quant.sf` files will be stored in a main `salmon_quant/` directory, which contains sub-directories, each of which carries a sample name. Thus, the following example code can be adapted to create a named vector:
@@ -162,7 +164,7 @@ txi <- tximport::tximport(files = files,
 ```
 
 ### Post-quantification QC checks
-- Once this is done, user can now perform basic quality-control checks, including:
+- Once quantification has been performed and data loaded into R, the user can now perform basic quality-control checks, including:
     - Sex checks -- using gene expression for *XIST* (female-specific, expressed for X-chromosome inactivation) and *DDX3Y* (located on Y-chromosome) determine whether gene expression patterns of sex-specific genes match the sample's assigned sex.
     - Check library sizes and count distributions by plotting. Consider colour by various factors (e.g. RIN) to see whether this explains distributions.
     - Principal component (PCA) plot for outlier analysis. If experiment is well controlled and has worked as expected, the greatest sources of variation should arise from the treatment/groups of interest. 
