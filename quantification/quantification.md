@@ -2,14 +2,14 @@
 1. [Download + installation](#download)
 2. [Running Salmon](#running_salmon)
 3. [Creating a salmon index](#creating_salmon_index)
-    a. [Example of creating a salmon index ](#example_salmon_index)
+    1. [Example of creating a salmon index ](#example_salmon_index)
 4. [Quantification](#quantification)
-    a. [Determining the library type](#library_type)
-    b. [Running Salmon quantification](#running_salmon_quant)
-    c. [Loading the data post-quantification](#loading_post_quant_data)
-        i. [Creating a named vector](#creating_named_vector)
-        ii. [Creating a transcript-to-gene map](#transcript_to_gene_map)
-    d. [Post-quantification QC checks](#QC_checks)
+    1. [Determining the library type](#library_type)
+    2. [Running Salmon quantification](#running_salmon_quant)
+    3. [Loading the data post-quantification](#loading_post_quant_data)
+        1. [Creating a named vector](#creating_named_vector)
+        2. [Creating a transcript-to-gene map](#transcript_to_gene_map)
+    4. [Post-quantification QC checks](#QC_checks)
 
 ## Download + installation <a name="download"></a>
 
