@@ -43,7 +43,6 @@ gunzip Homo_sapiens.GRCh38.97.ncrna.fa.gz
 cat Homo_sapiens.GRCh38.97.cdna.all.fa Homo_sapiens.GRCh38.97.ncrna.fa > Homo_sapiens.GRCh38.97.cdna.all.ncrna.fa
 
 # Used wc -l on all three files to check number of lines in concatenate file = number of lines in cdna + ncrna
-
 ```
 2. Creating a decoy transcriptome file. 
 ```{bash, eval = F, echo = T}
@@ -87,3 +86,81 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
 
 
 ### Running Salmon quantification
+Example command shown below.
+
+```{bash, eval = F, echo = T}
+nohup Rscript \
+/home/rreynolds/packages/RNAseqProcessing/quantification/quantification_Salmon.R \
+/data/RNAseq_PD/tissue_polyA_samples/QC/fastp \
+/tools/salmon/salmonReferences/ensembl_v97/Homo_sapiens.GRCh38.97.cdna.all.ncrna_index \
+/data/RNAseq_PD/tissue_polyA_samples/salmon_quant \
+--sample_prefix=NM...._ \
+--sample_suffix=_S.* \
+--library_type=ISF \
+&>/home/rreynolds/projects/Aim2_PDsequencing_wd/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_salmon_quant.log&
+```
+
+### Loading the data post-quantification
+- Data can be loaded into R using the packages `tximport` and `DESeq2`. As we have R version 3.4 (and thus an older version of Bioconductor), these must be installed using the following commands:
+```{R, eval = F, echo = T}
+source("https://bioconductor.org/biocLite.R")
+biocLite("DESeq2")
+biocLite("tximport")
+```
+- To import data you need:
+    1. A dataframe detailing all of your sample details e.g. age, sex, RIN, etc.
+    2. A named vector, wherein names refer to sample IDs, and values of the vector refer to file paths where Salmon `quant.sf` files are stored. 
+    3. A two-column dataframe linking transcript ids to gene ids. This is required for methods (such as Salmon) that provide transcript-level estimates only. N.B. The column names are not relevant, but the order of transcript id and gene id must be used. 
+
+#### Creating a named vector
+If [quantification_Salmon.R](quantification_Salmon.R) used, then `quant.sf` files will be stored in a main `salmon_quant/` directory, which contains sub-directories, each of which carries a sample name. Thus, the following example code can be adapted to create a named vector:
+```{R, eval = F, echo = T}
+# Create dataframe of file paths and sample names
+file_df <- tibble(file_paths = list.files(path = "/path_to_files/salmon_quant", 
+                                          recursive = T, 
+                                          pattern = "quant.sf",full.names = T),
+                  sample_name = list.files(path = "/path_to_files/salmon_quant", 
+                                           recursive = T, 
+                                           pattern = "quant.sf",full.names = T) %>% 
+                    str_replace("/quant.sf", "") %>% 
+                    str_replace("/.*/", "")) 
+
+# Create named vector                    
+files <- file_df$file_paths
+names(files) <- file_df$sample_name
+```
+
+#### Creating a transcript-to-gene map
+- The easiest way to generate this is to use a `txdb` generated from the reference transcriptome used in your Salmon quantification. 
+- If ensembl was used, please check the directory `/data/references/ensembl/txdb_sqlite/` to see if this is already available before creating one.
+- If unavailable, a txdb object can be created in a number of ways.
+    - It can be prepared from a `.GTF` file, using the `makeTxDbFromGFF` function in the `GenomicFeatures` package.
+    - If it is an ensembl transcriptome, it can be generated using the following code:
+```{R, eval = F, echo = T}
+txdb <- makeTxDbFromEnsembl(organism="Homo sapiens",
+                    release=97,
+                    server="ensembldb.ensembl.org")
+saveDb(txdb,
+       file = "/data/references/ensembl/txdb_sqlite/v97/Homo_sapiens.GRCh38.97.sqlite")
+```
+- Once a txdb object is available, the following code can be used to import the data.
+```{R, eval = F, echo = T}
+tx2gene <- ensembldb::select(txdb, 
+                             keys = keys(txdb, keytype = "TXNAME"), 
+                             columns = c("GENEID", "TXNAME"),
+                             keytype = "TXNAME")
+
+# Loading in salmon data
+txi <- tximport::tximport(files = files,
+                          type = c("salmon"),
+                          tx2gene = tx2gene, 
+                          ignoreTxVersion = TRUE, # splits tx id on the "." character to remove version info for easier matching with tx id in tx2gene
+                          dropInfReps = TRUE)
+```
+
+### Post-quantification QC checks
+- Once this is done, user can now perform basic quality-control checks, including:
+    - Sex checks -- using gene expression for *XIST* (female-specific, expressed for X-chromosome inactivation) and *DDX3Y* (located on Y-chromosome) determine whether gene expression patterns of sex-specific genes match the sample's assigned sex.
+    - Check library sizes and count distributions by plotting. Consider colour by various factors (e.g. RIN) to see whether this explains distributions.
+    - Principal component (PCA) plot for outlier analysis. If experiment is well controlled and has worked as expected, the greatest sources of variation should arise from the treatment/groups of interest. 
+- For a tutorial on the latter two, please refer to this [link](http://sbc.shef.ac.uk/workshops/2018-07-10-rna-seq/rna-seq-preprocessing.nb.html#quality_control) for more details. Code provided can be adapted to fit with your experimental set-up.
