@@ -1,4 +1,19 @@
-## Download + installation 
+# Table of contents
+1. [Download + installation](#download)
+2. [Generating genome indexes](#genome_index)
+    1. [Downloading the .fasta file](#downloading_fasta)
+    2. [Downloading the .gtf file](#downloading_gtf)
+    3. [Generating the genome index](#generate_genome_index)
+3. [Mapping FASTQs with STAR](#mapping_w_star)
+4. [Multi-sample 2-pass mapping](#multi_2pass)
+5. [Post-alignment QC](post_align_QC)
+    1. [Sorting and indexing .bam files](#sort_and_index)
+    2. [Converting gtf to bed format](#gtf_to_bed)
+    3. [RSeQC](#RSeQC)
+    4. [Running the post-alignment QC script](#running_post_align_QC)
+6. [Multi-QC](#multiQC)
+
+# Download + installation <a name="download"></a>
 
 - Star downloaded from https://github.com/alexdobin/STAR/releases. Current version is 2.7.0a.
 - Placed and unzipped into "/tools/STAR/". These come pre-compiled and the binary executable files are found in "/bin".
@@ -10,7 +25,7 @@ unzip 2.7.0a.zip
 export PATH=$PATH:/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/
 ```
 
-## Generating genome indexes
+# Generating genome indexes <a name="genome_index"></a>
 
 - This generates a genome index that is used by STAR for mapping reads, improving the efficiency of alignment by not having to search across the entire genome, instead grouping regions of similar sequence into indexes.
 - Requires as an input:
@@ -18,7 +33,7 @@ export PATH=$PATH:/tools/STAR/STAR-2.7.0a/bin/Linux_x86_64/
     2. A .gtf file detailing the annotations (check whether annotation has since been updated)
 - **Note:** As users might have varying read lengths they may have to generate a new genome index specific to their read length.
     
-### Downloading the .fasta file
+## Downloading the .fasta file <a name="downloading_fasta"></a>
 - The .fasta for hg38, ensembl v97 was downloaded using below command in the directory `/data/references/fasta`.
 - In general, as long as the build does not change this file can be used repeatedly to generate genome indexes.
 
@@ -28,7 +43,7 @@ gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 ```
 - Version number added to file name to distinguish from current versions in folder.
 
-### Downloading the .gtf file
+## Downloading the .gtf file <a name="downloading_gtf"></a>
 - The latest version can be downloaded from: https://www.ensembl.org/info/data/ftp/index.html. 
 - We have been storing various versions in the directory: `/data/references/ensembl/gtf_gff3/`. Choose the version suitable to your purposes.
 - As an example, version 97 was downladed using the following command in the directory `/data/references/ensembl/gtf_gff3/v97`:
@@ -38,7 +53,7 @@ wget ftp://ftp.ensembl.org/pub/release-97/gtf/homo_sapiens/Homo_sapiens.GRCh38.9
 gunzip Homo_sapiens.GRCh38.97.gtf.gz
 ```
 
-### Generating the genome index
+## Generating the genome index <a name="generate_genome_index"></a>
 - Below are the parameters used to generate the genome index: 
     + *runMode* - tells star we are generating an index and not mapping reads
     + *genomeDir* - output directory
@@ -57,7 +72,7 @@ STAR --runThreadN 10 \
 --sjdbOverhang 99
 ```
 
-## Mapping FASTQs with STAR
+# Mapping FASTQs with STAR <a name="mapping_w_star"></a>
 
 - For a sample of ~100mill 100bp paired end reads, using 15 threads, star takes about 15 minutes to finish aligning
 - There are several parameters that can be set in STAR. Below is what has been used in [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
@@ -104,7 +119,7 @@ nohup Rscript \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_1pass.log&
 ```
 
-## Multi-sample 2-pass mapping
+# Multi-sample 2-pass mapping <a name="multi_2pass"></a>
 - For sensitive novel junction discovery, 2-pass mapping is recommended. This can be run using:
     1. Multi-sample 2-pass mapping: implemented in this package.
     2. Per-sample 2-pass mapping: currently not implemented in this package.
@@ -135,13 +150,13 @@ nohup Rscript \
 --read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_2pass.log&
 ```
-## Post-alignment QC
+# Post-alignment QC <a name="post_align_QC"></a>
 
-### Sorting and indexing .bam files
+## Sorting and indexing .bam files <a name="sort_and_index"></a>
 - Many downstream applications require sorting and indexing of the .bam files. While STAR should, in theory, sort by co-ordinate, files did not seem to work with RSeQC, therefore built into [post_alignment_QC_RSeQC.R](../QC/post_alignment_QC_RSeQC.R) script a sorting and indexing using `samtools`. 
 - **Note:** once the script has sorted and indexed the original .bam file outputted by STAR, the original STAR .bam file will be removed, such that only the samtools-sorted .bam file remains. 
 
-### Converting gtf to bed format
+## Converting gtf to bed format <a name="gtf_to_bed"></a>
 - Several of the RSeQC modules require a reference gene model in the bed format. 
 - Several already available on the server. Please check following directory: `/data/references/ensembl/bed/`
 - If unavailable, can convert a .gtf to .bed format using the following commands:
@@ -151,8 +166,7 @@ nohup Rscript \
 /data/references/ensembl/gtf_gff3/v97/Homo_sapiens.GRCh38.97.gtf \
 > /data/references/ensembl/bed/v97/ensembl_GRCh38_v97.bed
 ```
-
-### RSeQC
+## RSeQC <a name="RSeQC"></a>
 - Used RSeQC for QC following alignment. 
 - RSeQC Modules implemented include:
     - *geneBody_coverage.py*: calculates the RNA-seq reads coverage over gene body.
@@ -167,7 +181,7 @@ nohup Rscript \
     - *bam_stat.py*: summarises mapping statistics of .bam file
 - For more details refer to: http://rseqc.sourceforge.net/
 
-### Running the post-alignment QC script
+## Running the post-alignment QC script <a name="running_post_align_QC"></a>
 As an example:
 
 ```{bash, echo = T, tidy = T, eval = F}
@@ -180,7 +194,8 @@ nohup Rscript \
 --sample_suffix=_Aligned.sortedByCoord.out.bam \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_nuclear_totalRNA_postalignment_QC.log&
 ```
-## Multi-QC
+
+# Multi-QC <a name="multiQC"></a>
 Following on from post-alignment QC, it is possible to gather a full report of all QC, including pre-alignment QC. As an example:
 
 ```{bash, echo = T, tidy = T, eval = F}
