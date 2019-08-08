@@ -76,7 +76,10 @@ bash /tools/salmon/SalmonTools/scripts/generateDecoyTranscriptome.sh \
     2. Provide the library type. This can be done in the [quantification_Salmon.R](quantification_Salmon.R) script by calling the `-l/--library_type` flag. A user may know their library type based on the library construction or can use the the `infer_experiment.py` script from `RSeQC` to determine strandedness. For an example command, see below.
     
 ```{bash, eval = F, echo = T}
-/tools/RSeQC-2.6.4/scripts/infer_experiment.py -i PDC87_A1B4_GM-T_Aligned.sortedBysamtools.out.bam -r /data/references/ensembl/bed/v97/ensembl_GRCh38_v97.bed -s 10000000
+/tools/RSeQC-2.6.4/scripts/infer_experiment.py \
+-i PDC87_A1B4_GM-T_Aligned.sortedBysamtools.out.bam \
+-r /data/references/ensembl/bed/v97/ensembl_GRCh38_v97.bed \
+-s 10000000
 
 # Output was majority fraction (> 80%) of reads: 1++,1--,2+-,2-+.
 # According to Salmon, this corresponds to ISF.
