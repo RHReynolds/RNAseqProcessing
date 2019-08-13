@@ -2,6 +2,7 @@
 
 export(call_RSeQC_modules)
 export(call_samtools_sort_index)
+export(convert_STAR_SJ_to_junc)
 export(get_bam_df)
 export(get_fastp_df)
 export(get_fastqc_for_STAR_df)
