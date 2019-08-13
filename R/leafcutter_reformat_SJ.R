@@ -13,6 +13,8 @@
 
 convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
 
+  library(tidyverse)
+
   paths <- list.files(path = sj_dir_path, pattern = "SJ.out.tab", full.names = TRUE)
 
   for(i in 1:length(paths)){
