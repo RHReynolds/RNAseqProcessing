@@ -75,30 +75,39 @@ STAR --runThreadN 10 \
 # Mapping FASTQs with STAR <a name="mapping_w_star"></a>
 
 - For a sample of ~100mill 100bp paired end reads, using 15 threads, star takes about 15 minutes to finish aligning
-- There are several parameters that can be set in STAR. Below is what has been used in [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
-
-```{r STAR function, echo = T, tidy = T, eval = F}
-  system(command = str_c("STAR",
-                           " --runThreadN ", threads_STAR,
-                           " --genomeDir ", genome_index_path,
-                           " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
-                           " --readFilesCommand  zcat ", # because fastq's are zipped
-                           "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "),
-                           "--outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
-                           "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM
-                           "--outSAMattrRGline ", str_c("ID:", read_group$full_name, " PU:", read_group$PU, " SM:", read_group$sample_name, " PL:Illumina LB:xxx "), # SAM/BAM read group line
-                           "--outFilterType BySJout ", # removes spurious split reads
-                           "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
-                           "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
-                           "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
-                           "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
-                           "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
-                           "--alignMatesGapMax 1000000", # max gap between pair mates. As per ENCODE options.
-                           "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
-                           "--alignSJDBoverhangMin 3" # minimum annotated split read anchor. Default is 3.
-                           ))
+- There are several parameters that can be set in STAR. Within both STAR alignment scripts, some of these arguments can be modified when calling the R script from the command line. Others are set, and have been set within the `get_star_parameters_set()` function in the (alignment_CommonFunctions.R)[../R/alignment_CommonFunctions.R] script.  
+- Modifiable arguments that are provided in the command line call, include:
+```{bash, echo = T, tidy = T, eval = F}
+  star_cmd <- str_c("STAR",
+                    " --runThreadN ", threads_STAR,
+                    " --genomeDir ", genome_index_path,
+                    " --sjdbFileChrStartEnd ", sj_path,
+                    " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
+                    " --readFilesCommand zcat ", # because fastq's are zipped
+                    "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "))
 ```
+- Set parameters include:
+```{bash, echo = T, tidy = T, eval = F}
 
+get_star_parameters_set <-function(){
+
+  return(str_c(" --outReadsUnmapped Fastx ", # output in separate fast/fastq files the unmapped/partially-mapped reads
+               "--outSAMtype BAM SortedByCoordinate ", # output as a sorted BAM,
+               "--outFilterType BySJout ", # removes spurious split reads
+               "--outFilterMultimapNmax 1 ", # only allows reads to be mapped to one position in the genome
+               "--outFilterMismatchNmax 999 ", # Maximum number of mismatches per pair. Large numbers switch off filter. Instead we filter by "--outFilterMismatchNoverReadLmax".
+               "--outFilterMismatchNoverReadLmax 0.04 ", # max number of mismatches per pair relative to read length. As per current ENCODE options.
+               "--alignIntronMin 20 ", # min intron length. As per ENCODE options.
+               "--alignIntronMax 1000000 ", # max intron length. As per ENCODE options (currently from ensembl its 1,097,903 from KCNIP4).
+               "--alignMatesGapMax 1000000 ", # max gap between pair mates. As per ENCODE options.
+               "--alignSJoverhangMin 8 ", # minimum unannotated split read anchor. As per ENCODE options.
+               "--alignSJDBoverhangMin 3 " # minimum annotated split read anchor. Default is 3.
+  ))
+
+}
+
+```
+- **If set parameters require changing, please create a pull request with argumentation included as to why the lab should be changing these parameters.**
 - STAR default parameters: https://github.com/alexdobin/STAR/blob/master/source/parametersDefault 
 - STAR manual with details of more parameters: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
 - Many of the parameters set below were set according to the ENCODE standard options for long RNA-seq pipeline (as per [STAR manual 2.7.1a](STARmanual.pdf))
