@@ -51,7 +51,7 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
   junc_df <- tibble(junc_file_name = list.files(path = output_path, pattern = "_SJ_leafcutter.junc", full.names = TRUE))
 
   write_delim(junc_df,
-              path = str_c(output_path, "/", sample_name, "_SJ_leafcutter.junc"),
+              path = str_c(output_path, "/list_juncfiles.txt"),
               delim = "\t",
               col_names = F)
 
