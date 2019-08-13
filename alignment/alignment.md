@@ -75,7 +75,7 @@ STAR --runThreadN 10 \
 # Mapping FASTQs with STAR <a name="mapping_w_star"></a>
 
 - For a sample of ~100mill 100bp paired end reads, using 15 threads, star takes about 15 minutes to finish aligning
-- There are several parameters that can be set in STAR. Within both STAR alignment scripts, some of these arguments can be modified when calling the R script from the command line. Others are set, and have been set within the `get_star_parameters_set()` function in the (alignment_CommonFunctions.R)[../R/alignment_CommonFunctions.R] script.  
+- There are several parameters that can be set in STAR. Within both STAR alignment scripts, some of these arguments can be modified when calling the R script from the command line. Others are set, and have been set within the `get_star_parameters_set()` function in the [alignment_CommonFunctions.R](../R/alignment_CommonFunctions.R) script.  
 - Modifiable arguments that are provided in the command line call, include:
 ```{bash, echo = T, tidy = T, eval = F}
   star_cmd <- str_c("STAR",
