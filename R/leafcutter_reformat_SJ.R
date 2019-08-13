@@ -39,9 +39,9 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
 
     # change the stop and start into characters to avoid saving with the scientific notation
     write_delim(sj_out_leafcutter_format %>%
-                  dplyr::mutate(intron_start = as.character(intron_start),
-                                intron_end = as.character(intron_end),
-                                unique_reads_junction = as.character(unique_reads_junction)),
+                  dplyr::mutate(intron_start = as.integer(intron_start),
+                                intron_end = as.integer(intron_end),
+                                unique_reads_junction = as.integer(unique_reads_junction)),
                 path = str_c(output_path, "/", sample_name, "_SJ_leafcutter.junc"),
                 delim = "\t",
                 col_names = F)
