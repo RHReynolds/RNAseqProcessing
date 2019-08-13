@@ -7,7 +7,8 @@
 #'   (SJ.out.tab).
 #' @param output_path Path to output directory.
 #'
-#' @return Leafcutter formatted .junc files in the output_path.
+#' @return Leafcutter formatted .junc files in the output_path, in addition to a
+#'   list of generated .junc files in a separate .txt file.
 #' @export
 #'
 
@@ -41,10 +42,18 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
                   dplyr::mutate(intron_start = as.character(intron_start),
                                 intron_end = as.character(intron_end),
                                 unique_reads_junction = as.character(unique_reads_junction)),
-                str_c(output_path, "/", sample_name, "_SJ_leafcutter.junc"),
+                path = str_c(output_path, "/", sample_name, "_SJ_leafcutter.junc"),
                 delim = "\t",
                 col_names = F)
   }
+
+  # write a .txt file with each
+  junc_df <- tibble(junc_file_name = list.files(path = output_path, pattern = "_SJ_leafcutter.junc", full.names = TRUE))
+
+  write_delim(junc_df,
+              path = str_c(output_path, "/", sample_name, "_SJ_leafcutter.junc"),
+              delim = "\t",
+              col_names = F)
 
 }
 
