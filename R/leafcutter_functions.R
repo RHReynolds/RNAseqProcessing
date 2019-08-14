@@ -59,4 +59,70 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
 
 
 
+#' Create LeafCutter group files for multiple pairwise comparisons.
+#'
+#' LeafCutter's differential splicing analyses currently only support pairwise
+#' comparisons. For each pairwise comparison it requires a group file to specify
+#' which samples belong to which group. Thus if a grouping variable contains > 2
+#' groups, multiple pairwise comparisons must be made. This function will
+#' identify the comparisons, based on an inputted grouping column, and will
+#' output separate group .txt files for each group comparison combination.
+#'
+#' @param df Dataframe that should have a minimum of two columns in the
+#'   following order: (i) sample name (filename in the leafcutter
+#'   '_perind_numers.count.gz' file) and (ii) grouping variable. Additional
+#'   columns will be used as confounders.
+#' @param group_column_name Name of column with grouping variable. Must be
+#'   entered in quotation marks "".
+#' @param output_path Output path where _group_file.txt files will be stored for
+#'   later LeafCutter differential splicing analyses. Files will be named using
+#'   group names for the comparison in question.
+#'
+#' @return Named _group_file.txt files for LeafCutter differential splicing
+#'   analyses. Files will be named using the groups included in the pairwise
+#'   comparison.
+#' @export
+#'
+
+create_group_files_multi_pairwisecomp <- function(df, group_column_name, output_path){
+
+  library(dplyr)
+  library(lazyeval)
+
+  # Create vector of groups
+  groups <- df %>%
+    .[[group_column_name]] %>%
+    unique()
+
+  # Create dataframe of comparisons
+  comparisons <-
+    combn(x = groups,
+          m = 2) %>%
+    t() %>%
+    as_tibble()
+
+  # Loop through comparisons and for each write out a group file
+  for(i in 1:nrow(comparisons)){
+
+    # Filter for comparisons
+    comparison <- comparisons[i,] %>%
+      as_vector()
+
+    # Create filter expression using column name and comparison vector
+    filter_criteria <- interp(~y %in% x, .values = list(y = as.name(group_column_name), x = comparison))
+
+    select_comparison <- df %>%
+      dplyr::filter_(filter_criteria)
+
+    write_delim(x = select_comparison,
+                path = str_c(output_path, "/",
+                             comparison[1], "_vs_", comparison[2], "_",
+                             "group_file.txt"),
+                delim = "\t",
+                col_names = F)
+
+  }
+
+}
+
 
