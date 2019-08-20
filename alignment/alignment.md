@@ -81,7 +81,7 @@ STAR --runThreadN 10 \
   star_cmd <- str_c("STAR",
                     " --runThreadN ", threads_STAR,
                     " --genomeDir ", genome_index_path,
-                    " --sj_file ", sj_path,
+                    " --sjdbFileChrStartEnd ", sj_path,
                     " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
                     " --readFilesCommand zcat ", # because fastq's are zipped
                     "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "))
