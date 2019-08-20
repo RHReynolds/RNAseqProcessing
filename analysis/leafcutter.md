@@ -34,22 +34,21 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_PDsequencing_wd/raw_data/
 
 # Running the code <a name="running_the_code"></a>
 
-- The Leafcutter package can be found in the following directory on the server: `/tools/leafcutter/`. 
-- Steps include:
+The Leafcutter package can be found in the following directory on the server: `/tools/leafcutter/`. Steps include:
     1. Generating .junc input files.
-        a. By default, a .bam file is required for this step.
-        b. **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](..R/leafcutter_functions.R) function, which can be called in RStudio.
+        1. By default, a .bam file is required for this step.
+        2. **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](..R/leafcutter_functions.R) function, which can be called in RStudio.
     2. Clustering introns, using the `leafcutter_cluster.py` script in the Leafcutter package.
     3. Differential splicing analyses.
-        a. Depending on the ensembl version used, this may require generation of a Leafcutter-appropriate exon file. This can be generated from a .gtf file using the `gtf_to_exons.R`script in the Leafcutter package. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
-        b. **`RNAseqProcessing`** LeafCutter's differential splicing analyses currently only support pairwise comparisons. For each pairwise comparison it requires a group file to specify which samples belong to which group. Thus, if a grouping variable contains > 2 groups, multiple pairwise comparisons must be made and multiple group files generated. The [`create_group_files_multi_pairwisecomp()`](..R/leafcutter_functions.R) function can be used to do this. It will identify the comparisons, based on an inputted grouping column, and will output separate group .txt files for each group comparison combination.
-        c. **`RNAseqProcessing`** With multiple comparisons, the differential splicing script provided by Leafcutter (`leafcutter_ds.R`) will have to be looped over the multiple comparisons. With the [leafcutter_ds_multi_pairwise.R](leafcutter_ds_multi_pairwise.R) script, which serves a wraparound for the original leafcutter script, this is possible.
+        1. Depending on the ensembl version used, this may require generation of a Leafcutter-appropriate exon file. This can be generated from a .gtf file using the `gtf_to_exons.R`script in the Leafcutter package. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
+        2. **`RNAseqProcessing`** LeafCutter's differential splicing analyses currently only support pairwise comparisons. For each pairwise comparison it requires a group file to specify which samples belong to which group. Thus, if a grouping variable contains > 2 groups, multiple pairwise comparisons must be made and multiple group files generated. The [`create_group_files_multi_pairwisecomp()`](..R/leafcutter_functions.R) function can be used to do this. It will identify the comparisons, based on an inputted grouping column, and will output separate group .txt files for each group comparison combination.
+        3. **`RNAseqProcessing`** With multiple comparisons, the differential splicing script provided by Leafcutter (`leafcutter_ds.R`) will have to be looped over the multiple comparisons. With the [leafcutter_ds_multi_pairwise.R](leafcutter_ds_multi_pairwise.R) script, which serves a wraparound for the original leafcutter script, this is possible.
     4. Visualise with Leafvis.
-        a. For visualisation, Leafcutter requires a number of files, which can be produced from a .gtf file, using their provided `gtf2leafcutter.pl` script. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
-        b. Results need to be prepared for use with Leafviz, which is done using the `prepare_results.R` script provided by Leafcutter.
-        c. **`RNAseqProcessing`** To format the results of multiple pairwise comparisons requires looping across the various pairwise comparisons and running the `prepare_results.R` for each individual pairwise comparison. This is what the [`leafviz_multi_pairwise.R`](leafviz_multi_pairwise.R) script does.
+        1. For visualisation, Leafcutter requires a number of files, which can be produced from a .gtf file, using their provided `gtf2leafcutter.pl` script. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
+        2. Results need to be prepared for use with Leafviz, which is done using the `prepare_results.R` script provided by Leafcutter.
+        3. **`RNAseqProcessing`** To format the results of multiple pairwise comparisons requires looping across the various pairwise comparisons and running the `prepare_results.R` for each individual pairwise comparison. This is what the [`leafviz_multi_pairwise.R`](leafviz_multi_pairwise.R) script does.
             - Note: Using the `leafviz_multi_pairwise.R` script assumes use of the `leafcutter_ds_multi_pairwise.R` script and the `create_group_files_multi_pairwisecomp()` function. This ensures that all files needed are named consistently. That is, the (i) `_cluster_signficance.txt`, (ii) `_effect_sizes.txt` and (iii) `_group_file.txt` for an individual pairwise comparison all have the same prefix.  
-        d. **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](..R/leafcutter_functions.R) function.
+        4. **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](..R/leafcutter_functions.R) function.
 
 ## Example code <a name="example_code"></a>
 
