@@ -2,7 +2,8 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{get_star_parameters_sjdb}
 \alias{get_star_parameters_sjdb}
-\title{Function to return a string containing the STAR parameters --sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.}
+\title{Function to return a string containing the STAR parameters
+--sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.}
 \usage{
 get_star_parameters_sjdb(sj_file)
 }
@@ -13,5 +14,6 @@ get_star_parameters_sjdb(sj_file)
 string with the sjdb STAR parameters
 }
 \description{
-Function to return a string containing the STAR parameters --sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.
+Function to return a string containing the STAR parameters
+--sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.
 }

@@ -5,9 +5,9 @@
 #'
 #' @param sj_dir_path Path to directory containing splice junctions files
 #'   (SJ.out.tab).
-#' @param output_path Path to output directory.
+#' @param output_path Path to output directory where .junc files will be stored.
 #'
-#' @return Leafcutter formatted .junc files in the output_path, in addition to a
+#' @return Leafcutter-formatted .junc files in the output_path, in addition to a
 #'   list of generated .junc files in a separate .txt file.
 #' @export
 #'
@@ -63,7 +63,7 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path){
 #'
 #' LeafCutter's differential splicing analyses currently only support pairwise
 #' comparisons. For each pairwise comparison it requires a group file to specify
-#' which samples belong to which group. Thus if a grouping variable contains > 2
+#' which samples belong to which group. Thus, if a grouping variable contains > 2
 #' groups, multiple pairwise comparisons must be made. This function will
 #' identify the comparisons, based on an inputted grouping column, and will
 #' output separate group .txt files for each group comparison combination.
@@ -125,4 +125,50 @@ create_group_files_multi_pairwisecomp <- function(df, group_column_name, output_
 
 }
 
+#' Run Leafviz app
+#'
+#' Function that allows leafviz shiny app to run when called from inside
+#' RStudio.
+#'
+#' @param leafviz_dir Path to the directory containing the (i) the
+#'   run_leafviz.R, (ii) the server.R and (iii) ui.R scripts.
+#' @param results_filename Name of the file (including the path to it) that
+#'   should be loaded by leafviz.
+#'
+#' @return The Leafviz app will open in a separate browser and load the results
+#'   of a differential splicing analysis.
+#' @export
+#'
+
+run_leafviz <- function(leafviz_dir, results_filename){
+
+  # Load libraries
+  library(shiny, quietly = TRUE)
+  library(dplyr, quietly = TRUE)
+  library(ggplot2, quietly = TRUE)
+  library(DT, quietly = TRUE)
+  library(leafcutter,quietly = TRUE)
+  library(reshape2, quietly = TRUE)
+  library(gridExtra, quietly = TRUE)
+  library(intervals, quietly = TRUE) # needed for pretty strand arrow placement
+  library(ggplot2, quietly = TRUE)
+  library(foreach, quietly = TRUE)
+  library(shinycssloaders, quietly = TRUE)
+
+  # Set working directory
+  setwd(leafviz_dir)
+
+  # Load results file
+  if(length(results_filename) == 0){
+    print("No results found!")
+  }
+
+  print(paste0("Loading results from ",results_filename))
+  load(results_filename, envir=.GlobalEnv)
+
+  # Start shiny app
+  shiny::runApp( launch.browser=TRUE )
+
+
+}
 
