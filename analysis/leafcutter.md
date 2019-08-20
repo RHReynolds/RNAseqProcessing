@@ -7,6 +7,10 @@
     4. [Visualise with Leafviz](#Leafviz)
 3. [Results](#Results)
 
+The documentation below provides an overview of the steps involved in Leafcutter differential splicing analyses, but not a step-by-step guide with commands. For a detailed tutorial on how to run Leafcutter, please refer to: http://davidaknowles.github.io/leafcutter/. 
+
+The documentation below also highlights where `RNAseqProcessing` functions/scripts written for the Leafcutter pipeline can be used (these sections are preceded by the label, **`RNAseqProcessing`**), and where Leafcutter reference files can be found on the server.
+
 # Background <a name="background"></a>
 
 - Leafcutter reference: https://www.nature.com/articles/s41588-017-0004-9
@@ -24,8 +28,6 @@
         1. Introns detected (i.e. have >=1 corresponding spliced read) in >= select number of samples (default: 5)
         2. Clusters found in each group are detected in >= select number of individuals (default: 3), with 20 spliced reads supporting introns in the cluster.
     - These filters are customisable as optional parameters.
-- **NOTE:** The documentation below provides an overview of the steps involved in Leafcutter differential splicing analyses, but not a step-by-step guide with commands. For a detailed tutorial on how to run Leafcutter, please refer to: http://davidaknowles.github.io/leafcutter/. The documentation below also highlights where `RNAseqProcessing` functions/scripts written for the Leafcutter pipeline can be used (these sections are preceded by the label, **`RNAseqProcessing`**), and where Leafcutter reference files can be found on the server.
-
 
 # Running the code <a name="running_the_code"></a>
 
