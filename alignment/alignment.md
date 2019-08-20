@@ -81,7 +81,7 @@ STAR --runThreadN 10 \
   star_cmd <- str_c("STAR",
                     " --runThreadN ", threads_STAR,
                     " --genomeDir ", genome_index_path,
-                    " --sjdbFileChrStartEnd ", sj_path,
+                    " --sj_file ", sj_path,
                     " --readFilesIn ", fastq_per_sample_paths_trimmed_paired[1], " ", fastq_per_sample_paths_trimmed_paired[2],
                     " --readFilesCommand zcat ", # because fastq's are zipped
                     "--outFileNamePrefix ",  str_c(output_path, "/", sample_name_to_filter, "_ "))
@@ -111,14 +111,14 @@ get_star_parameters_set <-function(){
 - STAR default parameters: https://github.com/alexdobin/STAR/blob/master/source/parametersDefault 
 - STAR manual with details of more parameters: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
 - Many of the parameters set below were set according to the ENCODE standard options for long RNA-seq pipeline (as per [STAR manual 2.7.1a](STARmanual.pdf))
-- To perform mapping use [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R). Call the script using: `Rscript /path/to/script/STAR_alignment_withReadGroups_1pass.R -h`. The `-h` flag will list the required inputs and optional arguments.
+- To perform mapping use [STAR_alignment_withReadGroups_multi2pass.R](STAR_alignment_withReadGroups_multi2pass.R). Call the script using: `Rscript /path/to/script/STAR_alignment_withReadGroups_multi2pass.R -h`. The `-h` flag will list the required inputs and optional arguments.
     - It is important that required inputs are supplied in the correct order (i.e. fastq_dir_paths, genome_index_path, output_path).
     - Optional arguments can be called using flags. To see options, call the script with `-h` flag.
     - As an example, this script was run using the following arguments.
     
 ```{bash, echo = T, tidy = T, eval = F}
 nohup Rscript \
-/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_withReadGroups_1pass.R \
+/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_withReadGroups_multi2pass.R \
 /data/RNAseq_PD/tissue_polyA_samples/QC/fastp \
 /data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99 \
 /data/RNAseq_PD/tissue_polyA_samples/STAR \
@@ -133,9 +133,9 @@ nohup Rscript \
     1. Multi-sample 2-pass mapping: implemented in this package.
     2. Per-sample 2-pass mapping: currently not implemented in this package.
 - Multi-sample 2-pass mapping, is performed in three steps:
-    1. Run 1st mapping pass for all samples with "usual" parameters using [STAR_alignment_withReadGroups_1pass.R](STAR_alignment_withReadGroups_1pass.R).
+    1. Run 1st mapping pass for all samples with "usual" parameters using [STAR_alignment_withReadGroups_multi2pass.R](STAR_alignment_withReadGroups_multi2pass.R).
     2. Merge all SJ.out.tab files from all samples and remove duplicated junctions using [STAR_splice_junction_merge.R](STAR_splice_junction_merge.R). Note that this script also has an optional flag ```-f```, which adds a filter for the number of samples a junction must be found in to be included in the final merged file. E.g. if set to 5, then only junctions found in 5 or more samples will be included.
-    3. Run 2nd mapping pass for all samples with "usual" parameters, and the addition of the merged SJ.out.tab file in the `--sjdbFileChrStartEnd` flag. This is implemented in [STAR_alignment_multi2pass.R](STAR_alignment_multi2pass.R).
+    3. Run 2nd mapping pass for all samples with "usual" parameters, and the addition of the merged SJ.out.tab file in the `--sj_file` flag. This is implemented in [STAR_alignment_withReadGroups_multi2pass.R](STAR_alignment_withReadGroups_multi2pass.R).
     
 - As an example, step 2 and 3 were performed as a continuation of the commands in the last section, using the following commands:
 
@@ -149,15 +149,16 @@ nohup Rscript \
 
 # Run 2nd pass mapping
 nohup Rscript \
-/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_multi2pass.R \
+/home/rreynolds/projects/RNAseqProcessing/alignment/STAR_alignment_withReadGroups_multi2pass.R \
 /data/RNAseq_PD/tissue_polyA_samples/QC/fastp \ 
 /data/STAR_data/genome_index_hg38_ens_v97/sjdbOverhang_99 \
 /data/RNAseq_PD/tissue_polyA_samples/STAR \
-/data/RNAseq_PD/tissue_polyA_samples/STAR/merged_junctions.SJ.out.tab \
 --sample_prefix=NM...._ \
 --sample_suffix=_S.* \
 --read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_2pass.log&
+--sj_file=/data/RNAseq_PD/tissue_polyA_samples/STAR/merged_junctions.SJ.out.tab \
+
 ```
 # Post-alignment QC <a name="post_align_QC"></a>
 
