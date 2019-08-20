@@ -35,14 +35,14 @@ The documentation below also highlights where `RNAseqProcessing` functions/scrip
 
 ## Generating .junc input files <a name="generate_junc_files"></a>
 - By default, a .bam file is required for this step.
-- **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](..R/leafcutter_functions.R) function, which can be called in RStudio.
+- **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](../R/leafcutter_functions.R) function, which can be called in RStudio.
  
 ## Clustering introns <a name="cluster_introns"></a>
 This uses the `leafcutter_cluster.py` script in the Leafcutter package.
 
 ## Differential splicing analyses <a name="ds"></a>
 - Depending on the ensembl version used, this may require generation of a Leafcutter-appropriate exon file. This can be generated from a .gtf file using the `gtf_to_exons.R`script in the Leafcutter package. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
-- **`RNAseqProcessing`** LeafCutter's differential splicing analyses currently only support pairwise comparisons. For each pairwise comparison it requires a group file to specify which samples belong to which group. Thus, if a grouping variable contains > 2 groups, multiple pairwise comparisons must be made and multiple group files generated. The [`create_group_files_multi_pairwisecomp()`](..R/leafcutter_functions.R) function can be used to do this. It will identify the comparisons, based on an inputted grouping column, and will output separate group .txt files for each group comparison combination.
+- **`RNAseqProcessing`** LeafCutter's differential splicing analyses currently only support pairwise comparisons. For each pairwise comparison it requires a group file to specify which samples belong to which group. Thus, if a grouping variable contains > 2 groups, multiple pairwise comparisons must be made and multiple group files generated. The [`create_group_files_multi_pairwisecomp()`](../R/leafcutter_functions.R) function can be used to do this. It will identify the comparisons, based on an inputted grouping column, and will output separate group .txt files for each group comparison combination.
 - **`RNAseqProcessing`** With multiple comparisons, the differential splicing script provided by Leafcutter (`leafcutter_ds.R`) will have to be looped over the multiple comparisons. With the [leafcutter_ds_multi_pairwise.R](leafcutter_ds_multi_pairwise.R) script, which serves a wraparound for the original leafcutter script, this is possible. See example code below:
 
 ```{bash run differential splicing leafcutter , echo = T, eval = F}
@@ -79,7 +79,7 @@ nohup Rscript /home/rreynolds/packages/RNAseqProcessing/analysis/leafviz_multi_p
 &>/home/rreynolds/projects/Aim2_PDsequencing_wd/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_leafviz_prepare_results.log&
 
 ```           
-- **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](..R/leafcutter_functions.R) function.
+- **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](../R/leafcutter_functions.R) function.
 
 ```{r run Leafviz, echo = T, eval=F}
 
