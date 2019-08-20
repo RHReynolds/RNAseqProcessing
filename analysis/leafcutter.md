@@ -1,4 +1,13 @@
-# Background
+# Table of contents
+1. [Background](#background)
+2. [Running the code](#running_the_code)
+    1. [Example code](#example_code)
+        1. [Differential splicing with multiple pairwise comparisons](#diff_splicing_multi)
+        2. [Leafviz with multiple pairwise comparisons](#leafviz_multi)
+        3. [Running Leafviz from inside RStudio](#leafviz_RStudio)
+3. [Results](#Results)
+
+# Background <a name="background"></a>
 
 - Leafcutter reference: https://www.nature.com/articles/s41588-017-0004-9
 - `leafcutter` quantifies intron excision ratios building a splicing graph with all split reads that have a shared donor or acceptor site sitting within one cluster
@@ -23,7 +32,7 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_PDsequencing_wd/raw_data/
 - **NOTE:** The documentation below provides an overview of the steps involved in Leafcutter differential splicing analyses, but not a step-by-step guide with commands. For a detailed tutorial on how to run Leafcutter, please refer to: http://davidaknowles.github.io/leafcutter/. The documentation below also highlights where `RNAseqProcessing` functions/scripts written for the Leafcutter pipeline can be used (these sections are preceded by the label, **`RNAseqProcessing`**), and where Leafcutter reference files can be found on the server.
 
 
-# Running the code
+# Running the code <a name="running_the_code"></a>
 
 - The Leafcutter package can be found in the following directory on the server: `/tools/leafcutter/`. 
 - Steps include:
@@ -35,7 +44,16 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_PDsequencing_wd/raw_data/
         a. Depending on the ensembl version used, this may require generation of a Leafcutter-appropriate exon file. This can be generated from a .gtf file using the `gtf_to_exons.R`script in the Leafcutter package. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
         b. **`RNAseqProcessing`** LeafCutter's differential splicing analyses currently only support pairwise comparisons. For each pairwise comparison it requires a group file to specify which samples belong to which group. Thus, if a grouping variable contains > 2 groups, multiple pairwise comparisons must be made and multiple group files generated. The [`create_group_files_multi_pairwisecomp()`](..R/leafcutter_functions.R) function can be used to do this. It will identify the comparisons, based on an inputted grouping column, and will output separate group .txt files for each group comparison combination.
         c. **`RNAseqProcessing`** With multiple comparisons, the differential splicing script provided by Leafcutter (`leafcutter_ds.R`) will have to be looped over the multiple comparisons. With the [leafcutter_ds_multi_pairwise.R](leafcutter_ds_multi_pairwise.R) script, which serves a wraparound for the original leafcutter script, this is possible.
+    4. Visualise with Leafvis.
+        a. For visualisation, Leafcutter requires a number of files, which can be produced from a .gtf file, using their provided `gtf2leafcutter.pl` script. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
+        b. Results need to be prepared for use with Leafviz, which is done using the `prepare_results.R` script provided by Leafcutter.
+        c. **`RNAseqProcessing`** To format the results of multiple pairwise comparisons requires looping across the various pairwise comparisons and running the `prepare_results.R` for each individual pairwise comparison. This is what the [`leafviz_multi_pairwise.R`](leafviz_multi_pairwise.R) script does.
+            - Note: Using the `leafviz_multi_pairwise.R` script assumes use of the `leafcutter_ds_multi_pairwise.R` script and the `create_group_files_multi_pairwisecomp()` function. This ensures that all files needed are named consistently. That is, the (i) `_cluster_signficance.txt`, (ii) `_effect_sizes.txt` and (iii) `_group_file.txt` for an individual pairwise comparison all have the same prefix.  
+        d. **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](..R/leafcutter_functions.R) function.
 
+## Example code <a name="example_code"></a>
+
+### Differential splicing with multiple pairwise comparisons <a name="diff_splicing_multi"></a>
 ```{bash run differential splicing leafcutter , echo = T, eval = F}
 nohup Rscript /home/rreynolds/packages/RNAseqProcessing/analysis/leafcutter_ds_multi_pairwise.R \
 /home/rreynolds/projects/Aim2_PDsequencing_wd/results/leafcutter/intron_clustering/tissue_polyA_test_diseasegroups_perind_numers.counts.gz \
@@ -51,12 +69,8 @@ nohup Rscript /home/rreynolds/packages/RNAseqProcessing/analysis/leafcutter_ds_m
 &>/home/rreynolds/projects/Aim2_PDsequencing_wd/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_leafcutter_ds.log&
 
 ```
-    4. Visualise with Leafvis.
-        a. For visualisation, Leafcutter requires a number of files, which can be produced from a .gtf file, using their provided `gtf2leafcutter.pl` script. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
-        b. Results need to be prepared for use with Leafviz, which is done using the `prepare_results.R` script provided by Leafcutter.
-        c. **`RNAseqProcessing`** To format the results of multiple pairwise comparisons requires looping across the various pairwise comparisons and running the `prepare_results.R` for each individual pairwise comparison. This is what the [`leafviz_multi_pairwise.R`](leafviz_multi_pairwise.R) script does.
-            - Note: Using the `leafviz_multi_pairwise.R` script assumes use of the `leafcutter_ds_multi_pairwise.R` script and the `create_group_files_multi_pairwisecomp()` function. This ensures that all files needed are named consistently. That is, the (i) `_cluster_signficance.txt`, (ii) `_effect_sizes.txt` and (iii) `_group_file.txt` for an individual pairwise comparison all have the same prefix.  
 
+### Leafviz with multiple pairwise comparisons <a name="leafviz_multi"></a>
 ```{bash run prepare_results , echo = T, eval = F}
 nohup Rscript /home/rreynolds/packages/RNAseqProcessing/analysis/leafviz_multi_pairwise.R \
 /home/rreynolds/projects/Aim2_PDsequencing_wd/results/leafcutter/intron_clustering/tissue_polyA_test_diseasegroups_perind_numers.counts.gz \
@@ -69,8 +83,8 @@ nohup Rscript /home/rreynolds/packages/RNAseqProcessing/analysis/leafviz_multi_p
 &>/home/rreynolds/projects/Aim2_PDsequencing_wd/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_leafviz_prepare_results.log&
 
 ```
-        d. **`RNAseqProcessing`** Leafviz data can be viewed directly from RStudio, using the [`run_leafviz()`](..R/leafcutter_functions.R) function.
 
+### Running Leafviz from inside RStudio <a name="leafviz_RStudio"></a>
 ```{r run Leafviz, echo = T, eval=F}
 
 RNAseqProcessing::run_leafviz(leafviz_dir = "/home/rreynolds/packages/leafcutter/leafviz/", 
@@ -78,5 +92,5 @@ RNAseqProcessing::run_leafviz(leafviz_dir = "/home/rreynolds/packages/leafcutter
 
 ```
 
-# Results
+# Results <a name="Results"></a>
 If multiple pairwise comparisons have been performed, it is important that the p-values are corrected appropriately. This can be done by reading in all `_cluster_significance.txt` files and applying R's `p.adjust()` to all tests that were successfully tested (i.e. `status == "Success"`). 
