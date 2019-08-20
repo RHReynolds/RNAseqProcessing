@@ -34,7 +34,8 @@ knitr::include_graphics("/home/rreynolds/projects/Aim2_PDsequencing_wd/raw_data/
 
 # Running the code <a name="running_the_code"></a>
 
-The Leafcutter package can be found in the following directory on the server: `/tools/leafcutter/`. Steps include:
+- The Leafcutter package can be found in the following directory on the server: `/tools/leafcutter/`. 
+- Steps include:
     1. Generating .junc input files.
         1. By default, a .bam file is required for this step.
         2. **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](..R/leafcutter_functions.R) function, which can be called in RStudio.
