@@ -1,3 +1,22 @@
+#' Function to return a string containing the STAR parameters --sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.
+#'
+#' @param sj_file - the file containing the splice jucntions fomr the 1st pass
+#'
+#' @return string with the sjdb STAR parameters
+#' @export
+#'
+
+get_star_parameters_sjdb<- function(sj_file){
+  # Determine limitSjdb for the --limitSjdbInsertNsj flag
+  limitSjdb <- get_limitSjdb(sj_file)
+
+  sjdbStarParameter <- str_c(" --sjdbFileChrStartEnd ", sj_file,
+                             " --limitSjdbInsertNsj ", format(limitSjdb, scientific=F) # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
+  )
+  return(sjdbStarParameter)
+}
+
+
 #' Function to make a data frame of trimmed paths for STAR.
 #'
 #' @param fastq_dir_paths Path names in which trimmed fastq files for alignment
