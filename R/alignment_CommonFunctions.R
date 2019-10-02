@@ -171,7 +171,7 @@ call_samtools_sort_index <- function(bam_per_sample_paths, output_path, sample_n
 #' @param output_path Output directory, where RSeQC outputs will be outputted.
 #' @param read_length Read length.
 #' @param sample_name Sample name.
-#' @param wait_flag Call flag with "TRUE", if memory available is <= 50%.
+#' @param wait_flag Call flag with "TRUE", if memory available is <= 50 \%.
 #'
 #' @export
 

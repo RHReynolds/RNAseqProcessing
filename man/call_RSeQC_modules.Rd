@@ -18,7 +18,7 @@ call_RSeQC_modules(bam_per_sample_paths, bed_gene_model_path, output_path,
 
 \item{sample_name}{Sample name.}
 
-\item{wait_flag}{Call flag with "TRUE", if memory available is <= 50%.}
+\item{wait_flag}{Call flag with "TRUE", if memory available is <= 50 \%.}
 }
 \description{
 Function to call RSeQC modules.
