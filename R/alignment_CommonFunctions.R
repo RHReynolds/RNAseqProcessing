@@ -171,7 +171,7 @@ call_samtools_sort_index <- function(bam_per_sample_paths, output_path, sample_n
 #' @param sample_name Sample name.
 #' @param wait_flag Call flag with "TRUE", if memory available is <= 50%.
 #'
-#' @return Runs system commands for RSeQC modules.
+#' @return Runs system commands.
 #' @export
 
 call_RSeQC_modules <- function(bam_per_sample_paths, bed_gene_model_path, output_path, read_length, sample_name, wait_flag = NULL){
