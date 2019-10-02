@@ -164,6 +164,8 @@ call_samtools_sort_index <- function(bam_per_sample_paths, output_path, sample_n
 
 #' Call RSeQC modules.
 #'
+#' Function to call RSeQC modules.
+#'
 #' @param bam_per_sample_paths File path for an individual sample .bam file.
 #' @param bed_gene_model_path Reference gene model in bed format.
 #' @param output_path Output directory, where RSeQC outputs will be outputted.
