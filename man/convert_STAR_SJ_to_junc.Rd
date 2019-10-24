@@ -2,15 +2,25 @@
 % Please edit documentation in R/leafcutter_functions.R
 \name{convert_STAR_SJ_to_junc}
 \alias{convert_STAR_SJ_to_junc}
-\title{Convert SJ.out.tab files to leafcutter .junc file}
+\title{Convert SJ.out.tab files to leafcutter .junc file and remove ENCODE blacklist
+regions}
 \usage{
-convert_STAR_SJ_to_junc(sj_dir_path, output_path)
+convert_STAR_SJ_to_junc(sj_dir_path, output_path,
+  filter_out_blacklist_regions = FALSE,
+  path_to_ENCODE_blacklist = NULL)
 }
 \arguments{
 \item{sj_dir_path}{Path to directory containing splice junctions files
 (SJ.out.tab).}
 
 \item{output_path}{Path to output directory where .junc files will be stored.}
+
+\item{filter_out_blacklist_regions}{To filter out ENCODE blacklist regions,
+set to TRUE. Default = FALSE.}
+
+\item{path_to_ENCODE_blacklist}{If filter_out_blacklist_regions = TRUE, must
+provide path to a bed file with ENCODE blacklist regions
+(https://github.com/Boyle-Lab/Blacklist/tree/master/lists).}
 }
 \value{
 Leafcutter-formatted .junc files in the output_path, in addition to a
@@ -18,5 +28,7 @@ Leafcutter-formatted .junc files in the output_path, in addition to a
 }
 \description{
 This function will convert SJ.out.tab files outputted by STAR alignment to
-the .junc file format necessary for leafcutter splicing analyses.
+the .junc file format necessary for leafcutter splicing analyses. THis
+function will also remove any junctions that overlap with ENCODE blacklist
+regions (https://www.nature.com/articles/s41598-019-45839-z)
 }
