@@ -2,17 +2,17 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{get_fastqc_for_STAR_df}
 \alias{get_fastqc_for_STAR_df}
-\title{Function to make a data frame of trimmed paths for STAR.}
+\title{Dataframe of trimmed fastq file paths.}
 \usage{
 get_fastqc_for_STAR_df(fastq_dir_paths, prefix_to_sample_name = "",
   to_exclude_to_get_sample_name = "")
 }
 \arguments{
-\item{fastq_dir_paths}{Path names in which trimmed fastq files for alignment
-are located.}
+\item{fastq_dir_paths}{Character. Path names in which trimmed fastq files for
+alignment are located.}
 
-\item{prefix_to_sample_name}{Specify if samples have been given a prefix to
-their original name.}
+\item{prefix_to_sample_name}{Character. Specify if samples have been given a
+prefix to their original name.}
 
 \item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be
 excluded from the tail end of the filename to get the sample name. If no
@@ -22,5 +22,6 @@ argument provided, defaults to empty string.}
 Dataframe with file paths.
 }
 \description{
-Function to make a data frame of trimmed paths for STAR.
+\code{get_fastqc_for_STAR_df} will make a data frame of trimmed paths for
+STAR.
 }

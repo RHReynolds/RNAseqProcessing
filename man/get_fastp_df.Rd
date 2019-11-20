@@ -2,26 +2,28 @@
 % Please edit documentation in R/prealignmentQC_CommonTrimmingFunctions.R
 \name{get_fastp_df}
 \alias{get_fastp_df}
-\title{Function to make a data frame of fastQC paths}
+\title{Dataframe of fastq paths.}
 \usage{
 get_fastp_df(fastq_dir_paths, prefix_to_sample_name = "", fastp_path,
   to_exclude_to_get_sample_name = "")
 }
 \arguments{
-\item{fastq_dir_paths}{Path names in which fastq files for QC are located.}
+\item{fastq_dir_paths}{Character. Path names in which fastq files for QC are
+located.}
 
-\item{prefix_to_sample_name}{Specify if samples have been given a prefix to
-their original name.}
+\item{prefix_to_sample_name}{Character. Specify if samples have been given a
+prefix to their original name.}
 
-\item{fastp_path}{Path name where trimmed files will be stored.}
+\item{fastp_path}{Character. Path name where trimmed files will be stored.}
 
-\item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be excluded
-from the tail end of the filename to get the sample name. If no argument
-provided, defaults to empty string.}
+\item{to_exclude_to_get_sample_name}{The text (or regex) that needs to be
+excluded from the tail end of the filename to get the sample name. If no
+argument provided, defaults to empty string.}
 }
 \value{
 Dataframe with file paths.
 }
 \description{
-Function to make a data frame of fastQC paths
+\code{get_fastp_df} creates a data frame based on fastq paths, with sample
+names.
 }

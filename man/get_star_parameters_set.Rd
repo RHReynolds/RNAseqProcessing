@@ -10,6 +10,7 @@ get_star_parameters_set()
 String with the fixed STAR parameters.
 }
 \description{
-Function to return a string containing the non-sampleID-dependent STAR
-parameters. To be used in the 1st and 2nd pass alignment.
+\code{get_star_parameters_set} returns a string containing the
+non-sampleID-dependent STAR parameters. To be used in the 1st and 2nd pass
+alignment.
 }

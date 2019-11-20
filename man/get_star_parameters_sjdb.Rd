@@ -2,18 +2,18 @@
 % Please edit documentation in R/alignment_CommonFunctions.R
 \name{get_star_parameters_sjdb}
 \alias{get_star_parameters_sjdb}
-\title{Function to return a string containing the STAR parameters
---sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.}
+\title{Get sjdb STAR parameters.}
 \usage{
 get_star_parameters_sjdb(sj_file)
 }
 \arguments{
-\item{sj_file}{- the file containing the splice jucntions fomr the 1st pass}
+\item{sj_file}{Character. File path to .SJ.out.tab file containing splice
+jucntions from STAR 1st pass.}
 }
 \value{
 string with the sjdb STAR parameters
 }
 \description{
-Function to return a string containing the STAR parameters
---sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.
+\code{get_star_parameters_sjdb} returns a string containing the STAR
+parameters --sjdbFileChrStartEnd and --limitSjdbInsertNsj for sjdb.
 }

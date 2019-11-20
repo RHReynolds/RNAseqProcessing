@@ -7,17 +7,16 @@
 create_group_files_multi_pairwisecomp(df, group_column_name, output_path)
 }
 \arguments{
-\item{df}{Dataframe that should have a minimum of two columns in the
-following order: (i) sample name (filename in the leafcutter
+\item{df}{Dataframe. Should have a minimum of two columns in the following
+order: (i) sample name (filename in the leafcutter
 '_perind_numers.count.gz' file) and (ii) grouping variable. Additional
 columns will be used as confounders.}
 
-\item{group_column_name}{Name of column with grouping variable. Must be
-entered in quotation marks "".}
+\item{group_column_name}{Character. Name of column with grouping variable.}
 
-\item{output_path}{Output path where _group_file.txt files will be stored for
-later LeafCutter differential splicing analyses. Files will be named using
-group names for the comparison in question.}
+\item{output_path}{Character. Output path where _group_file.txt files will be
+stored for later LeafCutter differential splicing analyses. Files will be
+named using group names for the comparison in question.}
 }
 \value{
 Named _group_file.txt files for LeafCutter differential splicing
@@ -27,8 +26,9 @@ Named _group_file.txt files for LeafCutter differential splicing
 \description{
 LeafCutter's differential splicing analyses currently only support pairwise
 comparisons. For each pairwise comparison it requires a group file to specify
-which samples belong to which group. Thus, if a grouping variable contains > 2
-groups, multiple pairwise comparisons must be made. This function will
-identify the comparisons, based on an inputted grouping column, and will
-output separate group .txt files for each group comparison combination.
+which samples belong to which group. Thus, if a grouping variable contains >
+2 groups, multiple pairwise comparisons must be made.
+\code{create_group_files_multi_pairwisecomp} will identify the comparisons,
+based on an inputted grouping column, and will output separate group .txt
+files for each group comparison combination.
 }

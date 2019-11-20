@@ -7,11 +7,12 @@
 call_samtools_sort_index(bam_per_sample_paths, output_path, sample_name)
 }
 \arguments{
-\item{bam_per_sample_paths}{File path for an individual sample .bam file.}
+\item{bam_per_sample_paths}{Character. File path for an individual sample
+.bam file.}
 
-\item{output_path}{Output path for sorted and indexed .bam file}
+\item{output_path}{Character. Output path for sorted and indexed .bam file}
 
-\item{sample_name}{Sample name.}
+\item{sample_name}{Character. Sample name.}
 }
 \value{
 Runs system commands for sorting and indexing .bam file.

@@ -7,9 +7,10 @@
 make_results_dir(results_path, folder_name)
 }
 \arguments{
-\item{results_path}{File path for where output files will be stored.}
+\item{results_path}{Character. File path for where output files will be
+stored.}
 
-\item{folder_name}{Folder name for output folder.}
+\item{folder_name}{Character. Folder name for output folder.}
 }
 \value{
 Creates a new folder for output (if it doesn't already exist).

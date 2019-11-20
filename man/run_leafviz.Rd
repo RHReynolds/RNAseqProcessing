@@ -7,17 +7,17 @@
 run_leafviz(leafviz_dir, results_filename)
 }
 \arguments{
-\item{leafviz_dir}{Path to the directory containing the (i) the
+\item{leafviz_dir}{Character. Path to the directory containing the (i) the
 run_leafviz.R, (ii) the server.R and (iii) ui.R scripts.}
 
-\item{results_filename}{Name of the file (including the path to it) that
-should be loaded by leafviz.}
+\item{results_filename}{Character. Name of the file (including the path to
+it) that should be loaded by leafviz.}
 }
 \value{
 The Leafviz app will open in a separate browser and load the results
   of a differential splicing analysis.
 }
 \description{
-Function that allows leafviz shiny app to run when called from inside
+\code{run_leafviz} allows leafviz shiny app to run when called from inside
 RStudio.
 }
