@@ -1,18 +1,18 @@
-#' Convert SJ.out.tab files to leafcutter .junc file and remove ENCODE blacklist
-#' regions
+#' Convert SJ.out.tab files to leafcutter .junc file
 #'
-#' This function will convert SJ.out.tab files outputted by STAR alignment to
-#' the .junc file format necessary for leafcutter splicing analyses. THis
-#' function will also remove any junctions that overlap with ENCODE blacklist
-#' regions (https://www.nature.com/articles/s41598-019-45839-z)
+#' \code{convert_STAR_SJ_to_junc} will convert SJ.out.tab files outputted by
+#' STAR alignment to the .junc file format necessary for leafcutter splicing
+#' analyses. THis function will also remove any junctions that overlap with
+#' ENCODE blacklist regions (https://www.nature.com/articles/s41598-019-45839-z)
 #'
-#' @param sj_dir_path Path to directory containing splice junctions files
-#'   (SJ.out.tab).
-#' @param output_path Path to output directory where .junc files will be stored.
-#' @param filter_out_blacklist_regions To filter out ENCODE blacklist regions,
-#'   set to TRUE. Default = FALSE.
-#' @param path_to_ENCODE_blacklist If filter_out_blacklist_regions = TRUE, must
-#'   provide path to a bed file with ENCODE blacklist regions
+#' @param sj_dir_path Character. Path to directory containing splice junctions
+#'   files (SJ.out.tab).
+#' @param output_path Character. Path to output directory where .junc files will
+#'   be stored.
+#' @param filter_out_blacklist_regions Logical. To filter out ENCODE blacklist
+#'   regions, set to TRUE. Default = FALSE.
+#' @param path_to_ENCODE_blacklist Character. If filter_out_blacklist_regions =
+#'   TRUE, must provide path to a bed file with ENCODE blacklist regions
 #'   (https://github.com/Boyle-Lab/Blacklist/tree/master/lists).
 #'
 #' @return Leafcutter-formatted .junc files in the output_path, in addition to a
@@ -120,20 +120,20 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path, filter_out_blackli
 #'
 #' LeafCutter's differential splicing analyses currently only support pairwise
 #' comparisons. For each pairwise comparison it requires a group file to specify
-#' which samples belong to which group. Thus, if a grouping variable contains > 2
-#' groups, multiple pairwise comparisons must be made. This function will
-#' identify the comparisons, based on an inputted grouping column, and will
-#' output separate group .txt files for each group comparison combination.
+#' which samples belong to which group. Thus, if a grouping variable contains >
+#' 2 groups, multiple pairwise comparisons must be made.
+#' \code{create_group_files_multi_pairwisecomp} will identify the comparisons,
+#' based on an inputted grouping column, and will output separate group .txt
+#' files for each group comparison combination.
 #'
-#' @param df Dataframe that should have a minimum of two columns in the
-#'   following order: (i) sample name (filename in the leafcutter
+#' @param df Dataframe. Should have a minimum of two columns in the following
+#'   order: (i) sample name (filename in the leafcutter
 #'   '_perind_numers.count.gz' file) and (ii) grouping variable. Additional
 #'   columns will be used as confounders.
-#' @param group_column_name Name of column with grouping variable. Must be
-#'   entered in quotation marks "".
-#' @param output_path Output path where _group_file.txt files will be stored for
-#'   later LeafCutter differential splicing analyses. Files will be named using
-#'   group names for the comparison in question.
+#' @param group_column_name Character. Name of column with grouping variable.
+#' @param output_path Character. Output path where _group_file.txt files will be
+#'   stored for later LeafCutter differential splicing analyses. Files will be
+#'   named using group names for the comparison in question.
 #'
 #' @return Named _group_file.txt files for LeafCutter differential splicing
 #'   analyses. Files will be named using the groups included in the pairwise
@@ -149,7 +149,9 @@ create_group_files_multi_pairwisecomp <- function(df, group_column_name, output_
   # Create vector of groups
   groups <- df %>%
     .[[group_column_name]] %>%
-    unique()
+    unique() %>%
+    sort() %>%
+    as.character()
 
   # Create dataframe of comparisons
   comparisons <-
@@ -184,13 +186,13 @@ create_group_files_multi_pairwisecomp <- function(df, group_column_name, output_
 
 #' Run Leafviz app
 #'
-#' Function that allows leafviz shiny app to run when called from inside
+#' \code{run_leafviz} allows leafviz shiny app to run when called from inside
 #' RStudio.
 #'
-#' @param leafviz_dir Path to the directory containing the (i) the
+#' @param leafviz_dir Character. Path to the directory containing the (i) the
 #'   run_leafviz.R, (ii) the server.R and (iii) ui.R scripts.
-#' @param results_filename Name of the file (including the path to it) that
-#'   should be loaded by leafviz.
+#' @param results_filename Character. Name of the file (including the path to
+#'   it) that should be loaded by leafviz.
 #'
 #' @return The Leafviz app will open in a separate browser and load the results
 #'   of a differential splicing analysis.
