@@ -78,15 +78,20 @@ convert_STAR_SJ_to_junc <- function(sj_dir_path, output_path, filter_out_blackli
       # Convert to leafcutter format
       sj_out_leafcutter_format <-
         sj_out %>%
+        # Remove unwanted chromosomes builds
+        dplyr::filter(chr %in% c(str_c("chr", 1:22), "chrX", "chrY", "chrM", "chrMT")) %>%
         dplyr::mutate(chr = str_remove(chr, "chr"),
                       strand = str_replace(strand, "\\*", "."),
                       unknown = ".") %>% # .junc files include a sixth empty column. '.' denotes this empty column
         dplyr::select(chr, intron_start, intron_end, unknown, unique_reads_junction, strand)
 
+
     } else{
 
       sj_out_leafcutter_format <-
         sj_out %>%
+        # Remove unwanted chromosomes builds
+        dplyr::filter(chr %in% c(str_c(1:22), "X", "Y", "M", "MT")) %>%
         dplyr::mutate(strand = ifelse(strand == 0, ".",
                                       ifelse(strand == 1, "+", "-")),
                       unknown = ".") %>% # .junc files include a sixth empty column. '.' denotes this empty column
