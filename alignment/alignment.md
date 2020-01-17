@@ -155,7 +155,7 @@ nohup Rscript \
 /data/RNAseq_PD/tissue_polyA_samples/STAR \
 --sample_prefix=NM...._ \
 --sample_suffix=_S.* \
---read_groups=/home/rreynolds/projects/Aim2_PDsequencing/data/Flowcell_info.txt \
+--read_groups=/home/rreynolds/projects/Aim2_PDsequencing_wd/raw_data/sample_details/Flowcell_info.txt \
 &>/home/rreynolds/projects/Aim2_PDsequencing/nohup_logs/PD_tissue_polyA_STAR_2pass.log&
 --sj_file=/data/RNAseq_PD/tissue_polyA_samples/STAR/merged_junctions.SJ.out.tab \
 
