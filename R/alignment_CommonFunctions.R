@@ -141,8 +141,15 @@ get_star_parameters_set <-function(){
 #'
 
 get_star_parameters_sjdb<- function(sj_file){
+
   # Determine limitSjdb for the --limitSjdbInsertNsj flag
-  limitSjdb <- get_limitSjdb(sj_file)
+  n_junc <-
+    read_delim(file = sj_file, col_names = FALSE, col_types = "cddc", delim = "\t") %>% nrow()
+  if ((n_junc * 1.2) <= 1000000) {
+    limitSjdb <- 1000000
+  } else{
+    limitSjdb <- round(n_junc * 1.2)
+  }
 
   sjdbStarParameter <- str_c(" --sjdbFileChrStartEnd ", sj_file,
                              " --limitSjdbInsertNsj ", format(limitSjdb, scientific=F) # maximum number of junction to be inserted to the genome on the ﬂy at the mapping stage, including those from annotations. Default is 1,000,000 -- but may need to be larger depending on annotation file.
