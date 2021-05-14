@@ -13,7 +13,7 @@ arguments <- parse_args(OptionParser(usage = "%prog",
                                      description="Script for merging SJ.out.tab files outputted by alignment, removing duplicated junctions, and outputting a single file with non-duplicated junctions from all samples.\n Required inputs:\n <sj_dir_path>: Path to directory containing splice junctions files (SJ.out.tab).\n",
                                      option_list=list(
                                        make_option(c("-o","--output_path"), default = "", help="If different output path desired, specify here. Default is to output the merged file to the same folder wherein SJ.out.tab files are located."),
-                                       make_option(c("-f,", "--filter_number_of_samples"), default = NULL, help = "Add filter for the number of samples a junction must be found in to be included in the final merged file. E.g. if set to 5, then only junctions found in 5 or more samples included."))),
+                                       make_option(c("-f", "--filter_number_of_samples"), default = NULL, help = "Add filter for the number of samples a junction must be found in to be included in the final merged file. E.g. if set to 5, then only junctions found in 5 or more samples included."))),
                         positional_arguments = 1)
 
 # # Comment in if want to test run script arguments

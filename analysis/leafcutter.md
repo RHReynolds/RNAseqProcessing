@@ -38,7 +38,7 @@ The documentation below also highlights where `RNAseqProcessing` functions/scrip
 - **RNAseqProcessing:** If you have run STAR multi2pass alignment, you will have SJ.out.tab files, with the necessary information for Step 2. Instead of using .bam files, SJ.out.tab files can be formatted using the [`convert_STAR_SJ_to_junc()`](../R/leafcutter_functions.R) function, which can be called in RStudio.
  
 ## Clustering introns <a name="cluster_introns"></a>
-This uses the `leafcutter_cluster.py` script in the Leafcutter package.
+This uses the `leafcutter_cluster_regtools.py` script in the Leafcutter package.
 
 ## Differential splicing analyses <a name="ds"></a>
 - Depending on the ensembl version used, this may require generation of a Leafcutter-appropriate exon file. This can be generated from a .gtf file using the `gtf_to_exons.R`script in the Leafcutter package. Before generating your own, check the following directory `/data/references/ensembl/gtf_gff3/` to see if a `leafcutter` directory with the necessary files already exists in the ensembl version required.
